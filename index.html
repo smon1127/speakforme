@@ -117,10 +117,13 @@
     .btn-speak {
       display: block; width: 100%; min-height: 50px; border-radius: 14px; border: none;
       background: #0284c7; color: #fff; font-size: 17px; font-weight: 700;
-      cursor: pointer; transition: filter .15s, transform .1s;
+      cursor: pointer; transition: filter .15s, transform .1s, background .2s, color .2s;
     }
     .btn-speak:hover  { filter: brightness(.92); }
     .btn-speak:active { transform: scale(.97); filter: brightness(.85); }
+    .btn-speak.share-mode {
+      background: #bbf7d0; color: #166534; border: 1.5px solid #86efac;
+    }
 
     /* ═══ TOOLBAR ═══ */
     .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
@@ -606,6 +609,7 @@ function enterEditMode() {
   const speakBtn = document.getElementById('btn-speak');
   speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Teilen';
   speakBtn.setAttribute('aria-label', 'Konfiguration teilen');
+  speakBtn.classList.add('share-mode');
   speakBtn.onclick = shareConfig;
   renderAll(draft, true);
   scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
@@ -623,6 +627,7 @@ function exitEditMode(apply) {
   const speakBtn = document.getElementById('btn-speak');
   speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Vorlesen';
   speakBtn.setAttribute('aria-label', 'Aktuellen Satz vorlesen');
+  speakBtn.classList.remove('share-mode');
   speakBtn.onclick = speakCurrent;
   renderAll(config, false);
   navFocus(0);
