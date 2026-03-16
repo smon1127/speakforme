@@ -432,10 +432,8 @@
       <div class="section-title" id="sec-buch">Buchstaben — einzelne Wörter tippen</div>
       <div class="letter-grid" id="letters" role="group" aria-label="Buchstaben"></div>
       <div class="letter-actions">
-        <button onclick="backspace()"    aria-label="Letzten Buchstaben löschen"><i class="fa-solid fa-delete-left"></i> Löschen</button>
-        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
-        <button onclick="navFocus(navIdx <= 0 ? navButtons().length - 1 : navIdx - 1)" aria-label="Vorheriger Button"><i class="fa-solid fa-arrow-left"></i></button>
-        <button onclick="navFocus(navIdx < 0 ? 0 : navIdx + 1)" aria-label="Nächster Button"><i class="fa-solid fa-arrow-right"></i></button>
+        <button onclick="backspace()" aria-label="Letzten Buchstaben löschen" style="min-height:62px;font-size:18px"><i class="fa-solid fa-delete-left"></i> Löschen</button>
+        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen" style="min-height:62px;font-size:18px">Leerzeichen</button>
       </div>
     </section>
 
