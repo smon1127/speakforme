@@ -571,6 +571,7 @@ function enterEditMode() {
   document.body.classList.add('editing');
   document.getElementById('edit-controls').classList.add('visible');
   renderAll(draft, true);
+  scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function exitEditMode(apply) {
