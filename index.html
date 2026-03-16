@@ -199,8 +199,6 @@
     body.editing .pain-btn,
     body.editing .btn-letter,
     body.editing .letter-actions button { opacity: .3; pointer-events: none; }
-    body.editing #btn-reload { display: none !important; }
-    body.editing #btn-share  { display: flex !important; }
 
     /* ═══ PAIN SCALE ═══ */
     .pain-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
@@ -352,20 +350,12 @@
         <i class="fa-solid fa-check"></i> Übernehmen
       </button>
     </div>
-    <button class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
+    <button id="btn-speak" class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
       <i class="fa-solid fa-volume-high"></i> Vorlesen
     </button>
-    <div style="display:flex;gap:8px;align-items:stretch">
-      <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" style="flex:1" aria-label="Eine Seite nach unten">
-        Nach unten <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <button id="btn-reload" class="scroll-btn scroll-btn-down" onclick="location.href='https://smon1127.github.io/kommunikationshilfe/'" style="flex-shrink:0;width:50px" aria-label="Neu laden">
-        <i class="fa-solid fa-rotate-right"></i>
-      </button>
-      <button id="btn-share" class="scroll-btn scroll-btn-down" onclick="shareConfig()" style="flex-shrink:0;width:50px;display:none" aria-label="Konfiguration teilen">
-        <i class="fa-solid fa-share-nodes"></i>
-      </button>
-    </div>
+    <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten" style="width:100%;margin-top:8px;margin-bottom:0">
+      Nach unten <i class="fa-solid fa-chevron-down"></i>
+    </button>
   </div>
 </nav>
 
@@ -613,6 +603,10 @@ function enterEditMode() {
   draft = deepClone(config);
   document.body.classList.add('editing');
   document.getElementById('edit-controls').classList.add('visible');
+  const speakBtn = document.getElementById('btn-speak');
+  speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Teilen';
+  speakBtn.setAttribute('aria-label', 'Konfiguration teilen');
+  speakBtn.onclick = shareConfig;
   renderAll(draft, true);
   scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -626,6 +620,10 @@ function exitEditMode(apply) {
   editMode = false;
   document.body.classList.remove('editing');
   document.getElementById('edit-controls').classList.remove('visible');
+  const speakBtn = document.getElementById('btn-speak');
+  speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Vorlesen';
+  speakBtn.setAttribute('aria-label', 'Aktuellen Satz vorlesen');
+  speakBtn.onclick = speakCurrent;
   renderAll(config, false);
   navFocus(0);
 }
@@ -968,7 +966,7 @@ function showToast(msg) {
 }
 
 async function shareConfig() {
-  const btn = document.getElementById('btn-share');
+  const btn = document.getElementById('btn-speak');
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
   try {
@@ -990,7 +988,7 @@ async function shareConfig() {
     if (e.name !== 'AbortError') showToast('Fehler beim Teilen');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i>';
+    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Teilen';
   }
 }
 
