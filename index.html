@@ -434,7 +434,8 @@
       <div class="letter-actions">
         <button onclick="backspace()"    aria-label="Letzten Buchstaben löschen"><i class="fa-solid fa-delete-left"></i> Löschen</button>
         <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
-        <button onclick="speakCurrent()" aria-label="Text vorlesen" style="background:#e0f2fe;color:#0c4a6e"><i class="fa-solid fa-volume-high"></i></button>
+        <button onclick="navFocus(navIdx <= 0 ? navButtons().length - 1 : navIdx - 1)" aria-label="Vorheriger Button"><i class="fa-solid fa-arrow-left"></i></button>
+        <button onclick="navFocus(navIdx < 0 ? 0 : navIdx + 1)" aria-label="Nächster Button"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </section>
 
