@@ -48,23 +48,30 @@
     .top-bar-inner { max-width: 640px; margin: 0 auto; padding: 8px 12px 0; }
 
     .scroll-btn {
-      width: 100%; min-height: 57px; border-radius: 0; border: none;
+      width: 100%; min-height: 114px; border-radius: 0; border: none;
       font-size: 15px; font-weight: 600; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background .15s, transform .12s; letter-spacing: .02em;
+      position: relative;
     }
     .scroll-btn:active { transform: scale(.97); }
     .scroll-btn-up {
       background: rgba(255,255,255,.10); color: #7dd3fc;
       border-bottom: 1.5px solid rgba(125,211,252,.20);
-      padding-top: env(safe-area-inset-top, 0);
+    }
+    .scroll-btn-up::before {
+      content: ''; display: block; height: env(safe-area-inset-top, 0);
+      position: absolute; top: 0; left: 0; right: 0;
     }
     .scroll-btn-up:hover  { background: rgba(255,255,255,.18); }
     .scroll-btn-up:active { background: rgba(255,255,255,.24); }
     .scroll-btn-down {
       background: #e0f2fe; color: #0284c7;
       border-top: 1.5px solid var(--line);
-      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .scroll-btn-down::after {
+      content: ''; display: block; height: env(safe-area-inset-bottom, 0);
+      position: absolute; bottom: 0; left: 0; right: 0;
     }
     .scroll-btn-down:hover  { background: #bae6fd; }
     .scroll-btn-down:active { background: #7dd3fc; }
