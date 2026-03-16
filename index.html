@@ -76,6 +76,20 @@
     .scroll-btn-down:hover  { background: #bae6fd; }
     .scroll-btn-down:active { background: #7dd3fc; }
 
+    .scroll-visual {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 50px; border-radius: 14px;
+      padding: 0 24px; pointer-events: none;
+      width: calc(100% - 24px); max-width: 616px;
+      font-size: 17px; font-weight: 700;
+    }
+    .scroll-btn-up .scroll-visual {
+      background: rgba(255,255,255,.12); border: 1.5px solid rgba(125,211,252,.40);
+    }
+    .scroll-btn-down .scroll-visual {
+      background: #fff; border: 1.5px solid var(--line); color: #0284c7;
+    }
+
     .phrase-label {
       font-size: 11px; font-weight: 700; letter-spacing: .10em;
       text-transform: uppercase; color: #7dd3fc; margin-bottom: 5px;
@@ -315,7 +329,7 @@
 <!-- ═══ TOP BAR ═══ -->
 <header class="top-bar" role="banner">
   <button class="scroll-btn scroll-btn-up" onclick="scrollPage(-1)" aria-label="Eine Seite nach oben">
-    <i class="fa-solid fa-chevron-up"></i> Nach oben
+    <span class="scroll-visual"><i class="fa-solid fa-chevron-up"></i> Nach oben</span>
   </button>
   <div class="top-bar-inner">
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
@@ -385,7 +399,7 @@
     </button>
   </div>
   <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten">
-    Nach unten <i class="fa-solid fa-chevron-down"></i>
+    <span class="scroll-visual">Nach unten <i class="fa-solid fa-chevron-down"></i></span>
   </button>
 </nav>
 
