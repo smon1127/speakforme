@@ -199,6 +199,8 @@
     body.editing .pain-btn,
     body.editing .btn-letter,
     body.editing .letter-actions button { opacity: .3; pointer-events: none; }
+    body.editing #btn-reload { display: none !important; }
+    body.editing #btn-share  { display: flex !important; }
 
     /* ═══ PAIN SCALE ═══ */
     .pain-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
@@ -357,12 +359,50 @@
       <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" style="flex:1" aria-label="Eine Seite nach unten">
         Nach unten <i class="fa-solid fa-chevron-down"></i>
       </button>
-      <button class="scroll-btn scroll-btn-down" onclick="location.href='https://smon1127.github.io/kommunikationshilfe/'" style="flex-shrink:0;width:50px" aria-label="Neu laden">
+      <button id="btn-reload" class="scroll-btn scroll-btn-down" onclick="location.href='https://smon1127.github.io/kommunikationshilfe/'" style="flex-shrink:0;width:50px" aria-label="Neu laden">
         <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <button id="btn-share" class="scroll-btn scroll-btn-down" onclick="shareConfig()" style="flex-shrink:0;width:50px;display:none" aria-label="Konfiguration teilen">
+        <i class="fa-solid fa-share-nodes"></i>
       </button>
     </div>
   </div>
 </nav>
+
+<!-- ═══ IMPORT MODAL ═══ -->
+<dialog id="importModal" aria-labelledby="import-title">
+  <div class="modal-inner">
+    <div class="modal-title" id="import-title">Konfiguration importieren?</div>
+    <p style="color:var(--muted);font-size:15px;margin:0 0 18px;line-height:1.5">Dieser Link enthält eine Tastenbelegung. Soll die aktuelle Konfiguration ersetzt werden?</p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="document.getElementById('importModal').close();stripConfigParam()">Abbrechen</button>
+      <button class="modal-btn-save"   onclick="applyImport()">Importieren</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ═══ SHARE FALLBACK MODAL ═══ -->
+<dialog id="shareModal" aria-labelledby="share-title">
+  <div class="modal-inner">
+    <div class="modal-title" id="share-title">Link teilen</div>
+    <div class="modal-field">
+      <label>Link kopieren</label>
+      <input id="share-url-input" type="url" readonly style="-webkit-user-select:text;user-select:text;touch-action:auto;font-size:13px" />
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="document.getElementById('shareModal').close()">Schließen</button>
+      <button class="modal-btn-save" onclick="copyShareUrl()">Kopieren</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast" style="
+  position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#0c4a6e;color:#fff;padding:10px 20px;border-radius:20px;
+  font-size:14px;font-weight:600;pointer-events:none;opacity:0;
+  transition:opacity .2s,transform .2s;z-index:200;white-space:nowrap
+"></div>
 
 <!-- ═══ EDIT MODAL ═══ -->
 <dialog id="editModal" aria-labelledby="modal-title">
@@ -833,11 +873,172 @@ document.addEventListener('keydown', e => {
 });
 
 // ════════════════════════════════════════════
+//  ENCODING / SHARING
+// ════════════════════════════════════════════
+function b64urlEncode(bytes) {
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64urlDecode(str) {
+  str = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (str.length % 4) str += '=';
+  const bin = atob(str);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+async function encodeConfig(cfg) {
+  const json = JSON.stringify(cfg);
+  const bytes = new TextEncoder().encode(json);
+  try {
+    const cs = new CompressionStream('deflate-raw');
+    const writer = cs.writable.getWriter();
+    writer.write(bytes); writer.close();
+    const chunks = [];
+    const reader = cs.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const total = chunks.reduce((n, c) => n + c.length, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    chunks.forEach(c => { out.set(c, off); off += c.length; });
+    return b64urlEncode(out);
+  } catch(e) {
+    // fallback: no compression
+    return b64urlEncode(bytes);
+  }
+}
+
+async function decodeConfig(str) {
+  const bytes = b64urlDecode(str);
+  try {
+    const ds = new DecompressionStream('deflate-raw');
+    const writer = ds.writable.getWriter();
+    writer.write(bytes); writer.close();
+    const chunks = [];
+    const reader = ds.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const total = chunks.reduce((n, c) => n + c.length, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    chunks.forEach(c => { out.set(c, off); off += c.length; });
+    return JSON.parse(new TextDecoder().decode(out));
+  } catch(e) {
+    // fallback: uncompressed
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+}
+
+function validateConfig(obj) {
+  return obj && Array.isArray(obj.sections) &&
+    obj.sections.every(s => s.id && s.title && Array.isArray(s.buttons) &&
+      s.buttons.every(b => b.label && b.phrase !== undefined));
+}
+
+function extractConfigParam() {
+  return new URLSearchParams(location.search).get('c');
+}
+
+function stripConfigParam() {
+  if (location.search) history.replaceState({}, '', location.pathname);
+}
+
+async function buildShareUrl() {
+  const encoded = await encodeConfig(config);
+  return location.origin + location.pathname + '?c=' + encoded;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => {
+    t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+async function shareConfig() {
+  const btn = document.getElementById('btn-share');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+  try {
+    const url = await buildShareUrl();
+    if (navigator.share) {
+      await navigator.share({ title: 'Kommunikationshilfe', url });
+    } else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      showToast('Link kopiert');
+    } else {
+      document.getElementById('share-url-input').value = url;
+      document.getElementById('shareModal').showModal();
+      setTimeout(() => {
+        const inp = document.getElementById('share-url-input');
+        inp.focus(); inp.select();
+      }, 80);
+    }
+  } catch(e) {
+    if (e.name !== 'AbortError') showToast('Fehler beim Teilen');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i>';
+  }
+}
+
+async function copyShareUrl() {
+  const url = document.getElementById('share-url-input').value;
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('Link kopiert');
+    document.getElementById('shareModal').close();
+  } catch(e) {}
+}
+
+// ── Import flow ──
+let _pendingImport = null;
+
+async function checkImportParam() {
+  const param = extractConfigParam();
+  if (!param) return;
+  try {
+    const decoded = await decodeConfig(param);
+    if (!validateConfig(decoded)) throw new Error('invalid');
+    _pendingImport = decoded;
+    document.getElementById('importModal').showModal();
+  } catch(e) {
+    showToast('Ungültiger Konfigurations-Link');
+    stripConfigParam();
+  }
+}
+
+function applyImport() {
+  if (!_pendingImport) return;
+  saveConfig(_pendingImport);
+  config = _pendingImport;
+  _pendingImport = null;
+  document.getElementById('importModal').close();
+  stripConfigParam();
+  renderAll(config, false);
+  navFocus(0);
+  showToast('Konfiguration importiert');
+}
+
+// ════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════
 config = loadConfig();
 renderAll(config, false);
 navFocus(0);
+checkImportParam();
 </script>
 </body>
 </html>
