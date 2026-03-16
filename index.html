@@ -29,6 +29,7 @@
       user-select: none;
     }
 
+    html, body { margin: 0; padding: 0; }
     html { height: 100%; }
     body {
       position: fixed;
@@ -78,6 +79,7 @@
       border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 800;
       color: #fff; line-height: 1.25; word-break: break-word;
       transition: background .15s; margin-bottom: 10px; cursor: pointer;
+      display: flex; align-items: center;
     }
     #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
     #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
