@@ -18,173 +18,116 @@
       --accent: #0284c7;
       --radius: 18px;
       --shadow: 0 4px 20px rgba(12,74,110,.10);
-      --bar-top-bg: #0c4a6e;
-      --bar-bottom-bg: #ffffff;
     }
 
     *, *::before, *::after {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    html {
-      height: 100%;
-      height: -webkit-fill-available;
-    }
-
+    html { height: 100%; height: -webkit-fill-available; }
     body {
       margin: 0;
-      height: 100vh;
-      height: 100dvh;
-      height: -webkit-fill-available;
-      display: flex;
-      flex-direction: column;
-      background: var(--bg);
-      color: var(--text);
+      height: 100vh; height: 100dvh; height: -webkit-fill-available;
+      display: flex; flex-direction: column;
+      background: var(--bg); color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
     }
 
     /* ═══ TOP BAR ═══ */
     .top-bar {
-      flex-shrink: 0;
-      background: var(--bar-top-bg);
+      flex-shrink: 0; background: #0c4a6e;
       padding: env(safe-area-inset-top, 0) 12px 0;
-      box-shadow: 0 2px 16px rgba(12,74,110,.30);
-      z-index: 10;
+      box-shadow: 0 2px 16px rgba(12,74,110,.30); z-index: 10;
     }
-    .top-bar-inner {
-      max-width: 640px;
-      margin: 0 auto;
-    }
+    .top-bar-inner { max-width: 640px; margin: 0 auto; }
 
-    /* shared scroll-btn shape — used in both bars */
     .scroll-btn {
-      width: 100%;
-      height: 38px;
-      border-radius: 12px;
-      border: none;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background .15s, transform .12s;
-      letter-spacing: .02em;
+      width: 100%; height: 38px; border-radius: 12px; border: none;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s, transform .12s; letter-spacing: .02em;
     }
     .scroll-btn:active { transform: scale(.97); }
-
-    /* top bar variant — sits above the phrase */
     .scroll-btn-up {
-      background: rgba(255,255,255,.10);
-      color: #7dd3fc;
+      background: rgba(255,255,255,.10); color: #7dd3fc;
       border: 1.5px solid rgba(125,211,252,.30);
-      margin-top: 8px;
-      margin-bottom: 8px;
+      margin-top: 8px; margin-bottom: 8px;
     }
     .scroll-btn-up:hover  { background: rgba(255,255,255,.18); }
     .scroll-btn-up:active { background: rgba(255,255,255,.24); }
-
-    /* bottom bar variant — sits below vorlesen */
     .scroll-btn-down {
-      background: #e0f2fe;
-      color: #0284c7;
-      border: 1.5px solid var(--line);
-      margin-top: 8px;
+      background: #e0f2fe; color: #0284c7;
+      border: 1.5px solid var(--line); margin-top: 8px;
     }
     .scroll-btn-down:hover  { background: #bae6fd; }
     .scroll-btn-down:active { background: #7dd3fc; }
 
     .phrase-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .10em;
-      text-transform: uppercase;
-      color: #7dd3fc;
-      margin-bottom: 5px;
+      font-size: 11px; font-weight: 700; letter-spacing: .10em;
+      text-transform: uppercase; color: #7dd3fc; margin-bottom: 5px;
     }
     #phrase {
-      width: 100%;
-      min-height: 52px;
-      background: rgba(255,255,255,.12);
-      border: 2px solid rgba(125,211,252,.4);
-      border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 22px;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.25;
-      word-break: break-word;
-      transition: background .15s;
-      margin-bottom: 10px;
-      cursor: pointer;
+      width: 100%; min-height: 52px;
+      background: rgba(255,255,255,.12); border: 2px solid rgba(125,211,252,.4);
+      border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 800;
+      color: #fff; line-height: 1.25; word-break: break-word;
+      transition: background .15s; margin-bottom: 10px; cursor: pointer;
     }
     #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
     #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
 
     /* ═══ SCROLL AREA ═══ */
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-    }
-    .scroll-inner {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 12px 12px 16px;
-    }
+    .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    .scroll-inner { max-width: 640px; margin: 0 auto; padding: 12px 12px 16px; }
 
     /* ═══ BOTTOM BAR ═══ */
     .bottom-bar {
-      flex-shrink: 0;
-      background: var(--bar-bottom-bg);
-      border-top: 1px solid var(--line);
+      flex-shrink: 0; background: #fff; border-top: 1px solid var(--line);
       padding: 10px 12px calc(env(safe-area-inset-bottom, 0) + 10px);
-      box-shadow: 0 -4px 20px rgba(12,74,110,.08);
-      z-index: 10;
+      box-shadow: 0 -4px 20px rgba(12,74,110,.08); z-index: 10;
     }
-    .bottom-bar-inner {
-      max-width: 640px;
-      margin: 0 auto;
+    .bottom-bar-inner { max-width: 640px; margin: 0 auto; }
+
+    /* edit mode controls row */
+    #edit-controls {
+      display: none; gap: 8px; margin-bottom: 10px;
     }
+    #edit-controls.visible { display: flex; }
+    .btn-cancel {
+      flex: 1; min-height: 46px; border-radius: 14px; border: 1.5px solid var(--line);
+      background: #f1f5f9; color: var(--text); font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: background .15s, transform .1s;
+    }
+    .btn-cancel:hover  { background: #e0f2fe; }
+    .btn-cancel:active { transform: scale(.97); }
+    .btn-apply {
+      flex: 1; min-height: 46px; border-radius: 14px; border: none;
+      background: #0284c7; color: #fff; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: filter .15s, transform .1s;
+    }
+    .btn-apply:hover  { filter: brightness(.92); }
+    .btn-apply:active { transform: scale(.97); filter: brightness(.85); }
+
     .btn-speak {
-      display: block;
-      width: 100%;
-      min-height: 50px;
-      border-radius: 14px;
-      border: none;
-      background: #0284c7;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: filter .15s, transform .1s;
+      display: block; width: 100%; min-height: 50px; border-radius: 14px; border: none;
+      background: #0284c7; color: #fff; font-size: 17px; font-weight: 700;
+      cursor: pointer; transition: filter .15s, transform .1s;
     }
     .btn-speak:hover  { filter: brightness(.92); }
     .btn-speak:active { transform: scale(.97); filter: brightness(.85); }
 
     /* ═══ TOOLBAR ═══ */
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 0 0 14px;
-    }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
     .toolbar button {
-      background: var(--card);
-      border: 1.5px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: background .15s, transform .1s;
+      background: var(--card); border: 1.5px solid var(--line); border-radius: 12px;
+      padding: 10px 16px; font-size: 15px; font-weight: 600; color: var(--text);
+      cursor: pointer; box-shadow: var(--shadow); transition: background .15s, transform .1s;
     }
     .toolbar button:hover  { background: #e0f2fe; }
     .toolbar button:active { transform: scale(.97); }
@@ -192,21 +135,16 @@
 
     /* ═══ SECTIONS ═══ */
     .section {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      margin-bottom: 14px;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
       box-shadow: var(--shadow);
     }
     .section-title {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 10px;
+      font-size: 12px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin: 0 0 10px;
     }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .two-col .section { margin-bottom: 0; }
 
     /* ═══ BUTTONS ═══ */
     .grid { display: grid; gap: 9px; }
@@ -214,23 +152,12 @@
     .col-3 { grid-template-columns: repeat(3, 1fr); }
 
     .btn {
-      border: 1.5px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      color: var(--text);
-      padding: 14px 10px;
-      min-height: 60px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(12,74,110,.08);
-      line-height: 1.2;
-      transition: filter .12s, transform .1s, box-shadow .12s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
+      border: 1.5px solid var(--line); border-radius: 14px; background: var(--card);
+      color: var(--text); padding: 14px 10px; min-height: 60px; font-size: 18px;
+      font-weight: 700; cursor: pointer; box-shadow: 0 2px 10px rgba(12,74,110,.08);
+      line-height: 1.2; transition: filter .12s, transform .1s, box-shadow .12s;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; position: relative; width: 100%;
     }
     .btn:hover  { filter: brightness(.93); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(12,74,110,.16); }
     .btn:active { filter: brightness(.83); transform: scale(.95) translateY(0); box-shadow: none; }
@@ -238,62 +165,61 @@
 
     .btn-huge { min-height: 80px; font-size: 26px; }
     .btn-big  { min-height: 68px; font-size: 20px; }
-
     .btn-yes  { background: #dcfce7; color: #166534; border-color: #86efac; }
     .btn-no   { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
     .btn-urg  { background: #fff7ed; color: #9a3412; border-color: #fdba74; }
     .btn-blue { background: #e0f2fe; color: #0c4a6e; border-color: #7dd3fc; }
 
-    /* ═══ TWO-COL ═══ */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .two-col .section { margin-bottom: 0; }
+    /* ═══ EDIT MODE ═══ */
+    .delete-badge {
+      position: absolute; top: -9px; right: -9px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #ef4444; color: #fff; border: 2px solid #fff;
+      font-size: 12px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      z-index: 5; box-shadow: 0 2px 6px rgba(0,0,0,.25);
+      transition: background .15s, transform .1s;
+    }
+    .delete-badge:hover  { background: #dc2626; }
+    .delete-badge:active { transform: scale(.88); }
+
+    .btn-add-new {
+      grid-column: 1 / -1; min-height: 50px; border-radius: 14px;
+      border: 2px dashed #94a3b8; background: transparent;
+      color: #64748b; font-size: 22px; cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-add-new:hover  { background: #f1f5f9; border-color: #0284c7; color: #0284c7; }
+    .btn-add-new:active { background: #e0f2fe; }
+
+    /* dim non-interactive stuff in edit mode */
+    body.editing .toolbar,
+    body.editing .section-title { opacity: .5; pointer-events: none; }
+    body.editing .btn { cursor: pointer; }
 
     /* ═══ PAIN SCALE ═══ */
     .pain-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
     .pain-btn {
-      border: none;
-      border-radius: 10px;
-      min-height: 54px;
-      font-size: 18px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: filter .12s, transform .1s;
+      border: none; border-radius: 10px; min-height: 54px;
+      font-size: 18px; font-weight: 800; cursor: pointer; transition: filter .12s, transform .1s;
     }
     .pain-btn:hover  { filter: brightness(.88); transform: translateY(-1px); }
     .pain-btn:active { filter: brightness(.78); transform: scale(.92) translateY(0); }
 
     /* ═══ LETTER GRID ═══ */
-    .letter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-      gap: 7px;
-    }
+    .letter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 7px; }
     .btn-letter {
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      background: var(--card);
-      color: var(--text);
-      min-height: 52px;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .12s, transform .1s;
+      border: 1.5px solid var(--line); border-radius: 10px; background: var(--card);
+      color: var(--text); min-height: 52px; font-size: 20px; font-weight: 700;
+      cursor: pointer; transition: background .12s, transform .1s;
     }
     .btn-letter:hover  { background: #e0f2fe; transform: translateY(-1px); }
     .btn-letter:active { background: #bae6fd; transform: scale(.92) translateY(0); }
-
     .letter-actions { display: flex; gap: 8px; margin-top: 10px; }
     .letter-actions button {
-      flex: 1;
-      min-height: 48px;
-      border-radius: 12px;
-      border: 1.5px solid var(--line);
-      background: #f1f5f9;
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .12s, transform .1s;
+      flex: 1; min-height: 62px; border-radius: 12px; border: 1.5px solid var(--line);
+      background: #f1f5f9; color: var(--text); font-size: 18px; font-weight: 600;
+      cursor: pointer; transition: background .12s, transform .1s;
     }
     .letter-actions button:hover  { background: #e0f2fe; }
     .letter-actions button:active { background: #bae6fd; transform: scale(.97); }
@@ -303,16 +229,45 @@
 
     /* ═══ KEYBOARD FOCUS ═══ */
     .nav-focus {
-      outline: 3px solid #0ea5e9 !important;
-      outline-offset: 3px;
+      outline: 3px solid #0ea5e9 !important; outline-offset: 3px;
       box-shadow: 0 0 0 6px rgba(14,165,233,.25) !important;
-      position: relative;
-      z-index: 2;
+      position: relative; z-index: 2;
     }
 
     /* ═══ FLASH ═══ */
     @keyframes flash { 0% { background: #bbf7d0; } 100% { background: transparent; } }
     .flash { animation: flash .35s ease-out; }
+
+    /* ═══ MODAL (edit dialog) ═══ */
+    #editModal {
+      border: none; border-radius: 20px; padding: 0;
+      width: min(420px, calc(100vw - 32px));
+      box-shadow: 0 20px 60px rgba(12,74,110,.25);
+      background: #fff;
+    }
+    #editModal::backdrop { background: rgba(12,74,110,.5); backdrop-filter: blur(4px); }
+    .modal-inner { padding: 22px 20px 20px; }
+    .modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin: 0 0 18px; }
+    .modal-field { margin-bottom: 14px; }
+    .modal-field label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .modal-field input {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      border: 1.5px solid var(--line); font-size: 17px; font-weight: 600;
+      color: var(--text); background: #f8fafc; outline: none;
+      transition: border-color .15s; -webkit-user-select: text; user-select: text;
+      touch-action: auto;
+    }
+    .modal-field input:focus { border-color: var(--accent); background: #fff; }
+    .modal-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+    .preset-chip {
+      padding: 7px 14px; border-radius: 20px; border: 2px solid transparent;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color .15s;
+    }
+    .preset-chip.selected { border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2,132,199,.3); }
+    .modal-actions { display: flex; gap: 8px; }
+    .modal-actions button { flex: 1; min-height: 48px; border-radius: 14px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .modal-btn-cancel { background: #f1f5f9; color: var(--text); }
+    .modal-btn-save   { background: #0284c7; color: #fff; }
 
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 480px) {
@@ -322,9 +277,7 @@
       .btn-big  { font-size: 18px; }
       .col-3    { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 340px) {
-      .pain-grid { grid-template-columns: repeat(4, 1fr); }
-    }
+    @media (max-width: 340px) { .pain-grid { grid-template-columns: repeat(4, 1fr); } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; transform: none !important; }
     }
@@ -339,205 +292,464 @@
       <i class="fa-solid fa-chevron-up"></i> Nach oben
     </button>
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
-    <div id="phrase" class="placeholder"
-         aria-live="assertive"
-         aria-label="Aktuelle Auswahl — tippen zum Buchstaben-Bereich springen"
-         onclick="scrollToLetters()" role="button" tabindex="0">Hier tippen …</div>
+    <div id="phrase" class="has-text" aria-live="assertive"
+         onclick="scrollToLetters()" role="button" tabindex="0">Ja</div>
   </div>
 </header>
 
 <!-- ═══ SCROLLABLE CONTENT ═══ -->
 <main class="scroll-area" id="scrollArea">
-  <div class="scroll-inner">
+  <div class="scroll-inner" id="scrollInner">
 
     <div class="toolbar" role="toolbar" aria-label="Einstellungen">
       <button onclick="toggleMute()" id="muteBtn" aria-pressed="true">Ton: an</button>
       <button onclick="toggleAuto()" id="autoBtn" class="active" aria-pressed="true">Auto-Vorlesen: an</button>
     </div>
 
-    <!-- SCHNELL -->
-    <section class="section" aria-labelledby="sec-schnell">
-      <div class="section-title" id="sec-schnell">Schnell — Wichtigstes zuerst</div>
-      <div class="grid col-2" style="margin-bottom:9px">
-        <button class="btn btn-huge btn-yes" onclick="say('Ja')">JA</button>
-        <button class="btn btn-huge btn-no"  onclick="say('Nein')">NEIN</button>
-      </div>
-      <div class="grid col-2">
-        <button class="btn btn-big btn-urg"  onclick="say('Ich habe Schmerzen')">Schmerzen</button>
-        <button class="btn btn-big btn-urg"  onclick="say('Ich bekomme schlecht Luft')">Luft <small>schlechte</small></button>
-        <button class="btn btn-big btn-blue" onclick="say('Ich habe Durst')">Durst</button>
-        <button class="btn btn-big btn-no"   onclick="say('Bitte Hilfe')">Hilfe</button>
-      </div>
-    </section>
+    <!-- configurable sections rendered here -->
+    <div id="sections-container"></div>
 
-    <!-- BEDÜRFNISSE + GEFÜHLE -->
-    <div class="two-col">
-      <section class="section" aria-labelledby="sec-bed">
-        <div class="section-title" id="sec-bed">Bedürfnisse</div>
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <button class="btn" onclick="say('Ich habe Durst')">Durst</button>
-          <button class="btn" onclick="say('Mein Mund ist trocken')">Trockener Mund</button>
-          <button class="btn" onclick="say('Mir ist kalt')">Kalt</button>
-          <button class="btn" onclick="say('Mir ist warm')">Warm</button>
-          <button class="btn" onclick="say('Bitte anders lagern')">Anders lagern</button>
-          <button class="btn" onclick="say('Bitte Decke')">Decke</button>
-          <button class="btn" onclick="say('Bitte Mundpflege')">Mundpflege</button>
-          <button class="btn" onclick="say('Bitte absaugen')">Absaugen</button>
-          <button class="btn btn-urg" onclick="say('Bitte Pflegepersonal rufen')">Pflege rufen</button>
-          <button class="btn btn-urg" onclick="say('Bitte Arzt rufen')">Arzt rufen</button>
-          <button class="btn" onclick="say('Ich möchte schlafen')">Schlafen</button>
-          <button class="btn" onclick="say('Ich bin müde')">Müde</button>
-        </div>
-      </section>
-
-      <section class="section" aria-labelledby="sec-gef">
-        <div class="section-title" id="sec-gef">Gefühle & Zustand</div>
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <button class="btn btn-urg"  onclick="say('Ich habe Angst')">Angst</button>
-          <button class="btn"          onclick="say('Mir ist unwohl')">Unwohl</button>
-          <button class="btn"          onclick="say('Mir ist übel')">Übel</button>
-          <button class="btn"          onclick="say('Mir ist schwindelig')">Schwindelig</button>
-          <button class="btn"          onclick="say('Ich bin verwirrt')">Verwirrt</button>
-          <button class="btn btn-yes"  onclick="say('Es geht besser')">Besser</button>
-          <button class="btn btn-blue" onclick="say('Bitte bleib bei mir')">Bleib bei mir</button>
-          <button class="btn btn-blue" onclick="say('Ich möchte Familie sehen')">Familie</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- SCHMERZSKALA -->
+    <!-- SCHMERZSKALA (fixed) -->
     <section class="section" aria-labelledby="sec-pain">
       <div class="section-title" id="sec-pain">Schmerzskala — 0 (kein) bis 10 (maximal)</div>
       <div class="pain-grid" id="painGrid" role="group" aria-label="Schmerzskala 0 bis 10"></div>
     </section>
 
-    <!-- WO TUT ES WEH -->
-    <section class="section" aria-labelledby="sec-wo">
-      <div class="section-title" id="sec-wo">Wo tut es weh?</div>
-      <div class="grid col-3">
-        <button class="btn" onclick="say('Schmerzen in der Brust')">Brust</button>
-        <button class="btn" onclick="say('Schmerzen im Hals')">Hals</button>
-        <button class="btn" onclick="say('Schmerzen am Mund')">Mund</button>
-        <button class="btn" onclick="say('Schmerzen im Bauch')">Bauch</button>
-        <button class="btn" onclick="say('Schmerzen im Rücken')">Rücken</button>
-        <button class="btn" onclick="say('Schmerzen im Arm')">Arm</button>
-        <button class="btn" onclick="say('Schmerzen in der Hand')">Hand</button>
-        <button class="btn" onclick="say('Schmerzen im Bein')">Bein</button>
-        <button class="btn" onclick="say('Schmerzen am Kopf')">Kopf</button>
-      </div>
-    </section>
-
-    <!-- BUCHSTABEN -->
+    <!-- BUCHSTABEN (fixed) -->
     <section class="section" aria-labelledby="sec-buch">
       <div class="section-title" id="sec-buch">Buchstaben — einzelne Wörter tippen</div>
       <div class="letter-grid" id="letters" role="group" aria-label="Buchstaben"></div>
       <div class="letter-actions">
-        <button onclick="backspace()" aria-label="Letzten Buchstaben löschen" style="min-height:62px;font-size:18px"><i class="fa-solid fa-delete-left"></i> Löschen</button>
-        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen" style="min-height:62px;font-size:18px">Leerzeichen</button>
+        <button onclick="backspace()" aria-label="Letzten Buchstaben löschen">
+          <i class="fa-solid fa-delete-left"></i> Löschen
+        </button>
+        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
       </div>
     </section>
 
-    <div class="footer">Offline-Webseite für das iPhone — Safari: Teilen → Zum Home-Bildschirm</div>
+    <div class="footer">Offline-Webseite für das iPhone — Safari: Teilen → Zum Home-Bildschirm<br>Lang drücken zum Bearbeiten</div>
   </div>
 </main>
 
 <!-- ═══ BOTTOM BAR ═══ -->
 <nav class="bottom-bar" aria-label="Aktionen">
   <div class="bottom-bar-inner">
+    <div id="edit-controls">
+      <button class="btn-cancel" onclick="exitEditMode(false)">
+        <i class="fa-solid fa-xmark"></i> Abbrechen
+      </button>
+      <button class="btn-apply" onclick="exitEditMode(true)">
+        <i class="fa-solid fa-check"></i> Übernehmen
+      </button>
+    </div>
     <button class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
       <i class="fa-solid fa-volume-high"></i> Vorlesen
     </button>
-    <div style="display:flex;gap:8px;margin-top:8px;align-items:stretch">
-      <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten" style="flex:1">
+    <div style="display:flex;gap:8px;align-items:stretch">
+      <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" style="flex:1" aria-label="Eine Seite nach unten">
         Nach unten <i class="fa-solid fa-chevron-down"></i>
       </button>
-      <button class="scroll-btn scroll-btn-down" onclick="location.href='https://smon1127.github.io/kommunikationshilfe/'" aria-label="Seite neu laden" style="flex-shrink:0;width:50px">
+      <button class="scroll-btn scroll-btn-down" onclick="location.href='https://smon1127.github.io/kommunikationshilfe/'" style="flex-shrink:0;width:50px" aria-label="Neu laden">
         <i class="fa-solid fa-rotate-right"></i>
       </button>
     </div>
   </div>
 </nav>
 
+<!-- ═══ EDIT MODAL ═══ -->
+<dialog id="editModal" aria-labelledby="modal-title">
+  <div class="modal-inner">
+    <div class="modal-title" id="modal-title">Schaltfläche bearbeiten</div>
+    <div class="modal-field">
+      <label for="modal-label">Beschriftung</label>
+      <input id="modal-label" type="text" maxlength="30" placeholder="Kurztext auf dem Button" autocomplete="off" />
+    </div>
+    <div class="modal-field">
+      <label for="modal-phrase">Gesprochener Text</label>
+      <input id="modal-phrase" type="text" maxlength="150" placeholder="Was vorgelesen wird" autocomplete="off" />
+    </div>
+    <div class="modal-field">
+      <label>Farbe</label>
+      <div class="modal-presets" id="presetChips"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeModal(false)">Abbrechen</button>
+      <button class="modal-btn-save"   onclick="closeModal(true)">Speichern</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
-  const phraseEl  = document.getElementById('phrase');
-  const scrollArea = document.getElementById('scrollArea');
-  let muted = false;
-  let autoSpeak = true;
+// ════════════════════════════════════════════
+//  DEFAULT CONFIG
+// ════════════════════════════════════════════
+const DEFAULT_CONFIG = {
+  sections: [
+    {
+      id: 'schnell', title: 'Schnell — Wichtigstes zuerst', cols: 2, group: null,
+      buttons: [
+        { label: 'JA',        phrase: 'Ja',                        cls: 'btn-huge btn-yes' },
+        { label: 'NEIN',      phrase: 'Nein',                      cls: 'btn-huge btn-no'  },
+        { label: 'Schmerzen', phrase: 'Ich habe Schmerzen',        cls: 'btn-big btn-urg'  },
+        { label: 'Luft',      phrase: 'Ich bekomme schlecht Luft', cls: 'btn-big btn-urg'  },
+        { label: 'Durst',     phrase: 'Ich habe Durst',            cls: 'btn-big btn-blue' },
+        { label: 'Hilfe',     phrase: 'Bitte Hilfe',               cls: 'btn-big btn-no'   },
+      ]
+    },
+    {
+      id: 'beduerfnisse', title: 'Bedürfnisse', cols: 2, group: 'left',
+      buttons: [
+        { label: 'Durst',         phrase: 'Ich habe Durst',               cls: '' },
+        { label: 'Trockener Mund',phrase: 'Mein Mund ist trocken',        cls: '' },
+        { label: 'Kalt',          phrase: 'Mir ist kalt',                 cls: '' },
+        { label: 'Warm',          phrase: 'Mir ist warm',                 cls: '' },
+        { label: 'Anders lagern', phrase: 'Bitte anders lagern',          cls: '' },
+        { label: 'Decke',         phrase: 'Bitte Decke',                  cls: '' },
+        { label: 'Mundpflege',    phrase: 'Bitte Mundpflege',             cls: '' },
+        { label: 'Absaugen',      phrase: 'Bitte absaugen',               cls: '' },
+        { label: 'Pflege rufen',  phrase: 'Bitte Pflegepersonal rufen',   cls: 'btn-urg' },
+        { label: 'Arzt rufen',    phrase: 'Bitte Arzt rufen',             cls: 'btn-urg' },
+        { label: 'Schlafen',      phrase: 'Ich möchte schlafen',          cls: '' },
+        { label: 'Müde',          phrase: 'Ich bin müde',                 cls: '' },
+      ]
+    },
+    {
+      id: 'gefuehle', title: 'Gefühle & Zustand', cols: 2, group: 'right',
+      buttons: [
+        { label: 'Angst',        phrase: 'Ich habe Angst',              cls: 'btn-urg'  },
+        { label: 'Unwohl',       phrase: 'Mir ist unwohl',              cls: ''         },
+        { label: 'Übel',         phrase: 'Mir ist übel',               cls: ''         },
+        { label: 'Schwindelig',  phrase: 'Mir ist schwindelig',         cls: ''         },
+        { label: 'Verwirrt',     phrase: 'Ich bin verwirrt',            cls: ''         },
+        { label: 'Besser',       phrase: 'Es geht besser',              cls: 'btn-yes'  },
+        { label: 'Bleib bei mir',phrase: 'Bitte bleib bei mir',         cls: 'btn-blue' },
+        { label: 'Familie',      phrase: 'Ich möchte Familie sehen',    cls: 'btn-blue' },
+      ]
+    },
+    {
+      id: 'wo', title: 'Wo tut es weh?', cols: 3, group: null,
+      buttons: [
+        { label: 'Brust',  phrase: 'Schmerzen in der Brust', cls: '' },
+        { label: 'Hals',   phrase: 'Schmerzen im Hals',      cls: '' },
+        { label: 'Mund',   phrase: 'Schmerzen am Mund',      cls: '' },
+        { label: 'Bauch',  phrase: 'Schmerzen im Bauch',     cls: '' },
+        { label: 'Rücken', phrase: 'Schmerzen im Rücken',    cls: '' },
+        { label: 'Arm',    phrase: 'Schmerzen im Arm',       cls: '' },
+        { label: 'Hand',   phrase: 'Schmerzen in der Hand',  cls: '' },
+        { label: 'Bein',   phrase: 'Schmerzen im Bein',      cls: '' },
+        { label: 'Kopf',   phrase: 'Schmerzen am Kopf',      cls: '' },
+      ]
+    }
+  ]
+};
 
-  function scrollPage(dir) {
-    if (dir > 0 && scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 4) return;
-    if (dir < 0 && scrollArea.scrollTop <= 0) return;
-    scrollArea.scrollBy({ top: dir * scrollArea.clientHeight * 0.85, behavior: 'smooth' });
+const PRESETS = [
+  { cls: '',         label: 'Standard', bg: '#ffffff', color: '#0c4a6e', border: '#bae6fd' },
+  { cls: 'btn-yes',  label: 'Grün',     bg: '#dcfce7', color: '#166534', border: '#86efac' },
+  { cls: 'btn-no',   label: 'Rot',      bg: '#fee2e2', color: '#991b1b', border: '#fca5a5' },
+  { cls: 'btn-urg',  label: 'Orange',   bg: '#fff7ed', color: '#9a3412', border: '#fdba74' },
+  { cls: 'btn-blue', label: 'Blau',     bg: '#e0f2fe', color: '#0c4a6e', border: '#7dd3fc' },
+];
+
+const LS_KEY = 'kommunikationshilfe_v2';
+
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let config, draft;
+let editMode = false;
+let modalTarget = null; // { sectionId, btnIndex } btnIndex=-1 = new
+
+function loadConfig() {
+  try {
+    const s = localStorage.getItem(LS_KEY);
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return deepClone(DEFAULT_CONFIG);
+}
+function saveConfig(cfg) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
+
+// ════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════
+function renderAll(cfg, isEditing) {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+
+  // Group sections into rows (pair left+right into two-col)
+  let i = 0;
+  const sections = cfg.sections;
+  while (i < sections.length) {
+    const sec = sections[i];
+    if (sec.group === 'left' && i + 1 < sections.length && sections[i+1].group === 'right') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'two-col';
+      wrapper.appendChild(renderSection(sec, isEditing));
+      wrapper.appendChild(renderSection(sections[i+1], isEditing));
+      container.appendChild(wrapper);
+      i += 2;
+    } else {
+      container.appendChild(renderSection(sec, isEditing));
+      i++;
+    }
+  }
+  rebuildKeyboardNav();
+}
+
+function renderSection(sec, isEditing) {
+  const el = document.createElement('section');
+  el.className = 'section';
+  el.setAttribute('aria-labelledby', 'sec-' + sec.id);
+
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.id = 'sec-' + sec.id;
+  title.textContent = sec.title;
+  el.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid col-' + sec.cols;
+
+  sec.buttons.forEach((btn, idx) => {
+    grid.appendChild(renderButton(btn, sec.id, idx, isEditing));
+  });
+
+  if (isEditing) {
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn-add-new';
+    addBtn.setAttribute('aria-label', 'Button hinzufügen');
+    addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+    addBtn.onclick = () => openModal(sec.id, -1);
+    grid.appendChild(addBtn);
   }
 
-  function scrollToLetters() {
-    const sec = document.getElementById('sec-buch').closest('section');
-    scrollArea.scrollTo({ top: sec.offsetTop - 8, behavior: 'smooth' });
+  el.appendChild(grid);
+  return el;
+}
+
+function renderButton(btn, sectionId, idx, isEditing) {
+  const b = document.createElement('button');
+  b.className = 'btn ' + (btn.cls || '');
+  b.textContent = btn.label;
+
+  if (isEditing) {
+    b.onclick = () => openModal(sectionId, idx);
+
+    const badge = document.createElement('button');
+    badge.className = 'delete-badge';
+    badge.setAttribute('aria-label', 'Löschen');
+    badge.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    badge.onclick = (e) => {
+      e.stopPropagation();
+      const sec = draft.sections.find(s => s.id === sectionId);
+      sec.buttons.splice(idx, 1);
+      renderAll(draft, true);
+    };
+    b.appendChild(badge);
+  } else {
+    b.onclick = () => say(btn.phrase);
+    attachLongPress(b);
   }
+  return b;
+}
 
-  function say(text) {
-    phraseEl.textContent = text;
-    phraseEl.classList.remove('placeholder');
-    phraseEl.classList.add('has-text');
-    phraseEl.classList.remove('flash');
-    void phraseEl.offsetWidth;
-    phraseEl.classList.add('flash');
-    if (autoSpeak && !muted) speak(text);
+// ════════════════════════════════════════════
+//  EDIT MODE
+// ════════════════════════════════════════════
+function enterEditMode() {
+  if (editMode) return;
+  editMode = true;
+  draft = deepClone(config);
+  document.body.classList.add('editing');
+  document.getElementById('edit-controls').classList.add('visible');
+  renderAll(draft, true);
+}
+
+function exitEditMode(apply) {
+  if (apply) {
+    config = deepClone(draft);
+    saveConfig(config);
   }
+  draft = null;
+  editMode = false;
+  document.body.classList.remove('editing');
+  document.getElementById('edit-controls').classList.remove('visible');
+  renderAll(config, false);
+  navFocus(0);
+}
 
-  function clearPhrase() {
-    phraseEl.textContent = 'Hier tippen …';
-    phraseEl.classList.remove('has-text');
-    phraseEl.classList.add('placeholder');
-    window.speechSynthesis && window.speechSynthesis.cancel();
+// ════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════
+let selectedPresetCls = '';
+
+function buildPresetChips(currentCls) {
+  const container = document.getElementById('presetChips');
+  container.innerHTML = '';
+  selectedPresetCls = currentCls || '';
+  PRESETS.forEach(p => {
+    const chip = document.createElement('button');
+    chip.className = 'preset-chip' + (p.cls === selectedPresetCls ? ' selected' : '');
+    chip.textContent = p.label;
+    chip.style.cssText = `background:${p.bg};color:${p.color};border-color:${p.border}`;
+    chip.onclick = () => {
+      selectedPresetCls = p.cls;
+      buildPresetChips(p.cls);
+    };
+    container.appendChild(chip);
+  });
+}
+
+function openModal(sectionId, btnIndex) {
+  modalTarget = { sectionId, btnIndex };
+  const isNew = btnIndex === -1;
+  const btn = isNew
+    ? { label: '', phrase: '', cls: '' }
+    : draft.sections.find(s => s.id === sectionId).buttons[btnIndex];
+
+  // Strip size variants from cls for color picker (keep only color cls)
+  const colorCls = (btn.cls || '').replace(/btn-huge|btn-big/g, '').trim();
+
+  document.getElementById('modal-label').value  = btn.label;
+  document.getElementById('modal-phrase').value = btn.phrase;
+  buildPresetChips(colorCls);
+  document.getElementById('editModal').showModal();
+  setTimeout(() => document.getElementById('modal-label').focus(), 50);
+}
+
+function closeModal(save) {
+  if (save) {
+    const label  = document.getElementById('modal-label').value.trim();
+    const phrase = document.getElementById('modal-phrase').value.trim();
+    if (!label || !phrase) {
+      document.getElementById('modal-label').focus();
+      return;
+    }
+    const { sectionId, btnIndex } = modalTarget;
+    const sec = draft.sections.find(s => s.id === sectionId);
+    const updated = { label, phrase, cls: selectedPresetCls };
+    if (btnIndex === -1) sec.buttons.push(updated);
+    else sec.buttons[btnIndex] = updated;
   }
+  document.getElementById('editModal').close();
+  modalTarget = null;
+  renderAll(draft, true);
+}
 
-  function appendLetter(ch) {
-    const cur = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent;
-    phraseEl.textContent = cur + ch;
-    phraseEl.classList.remove('placeholder');
-    phraseEl.classList.add('has-text');
+// Close modal on backdrop click
+document.getElementById('editModal').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  if (e.clientX < rect.left || e.clientX > rect.right ||
+      e.clientY < rect.top  || e.clientY > rect.bottom) {
+    closeModal(false);
   }
+});
 
-  function appendSpace() { appendLetter(' '); }
+// ════════════════════════════════════════════
+//  LONG PRESS (event delegation on scroll-inner)
+// ════════════════════════════════════════════
+function attachLongPress(element) {
+  let timer = null;
+  let moved = false;
 
-  function backspace() {
-    if (phraseEl.classList.contains('placeholder')) return;
-    const next = phraseEl.textContent.slice(0, -1);
-    if (!next) { clearPhrase(); return; }
-    phraseEl.textContent = next;
-  }
+  function start() { moved = false; timer = setTimeout(() => { if (!moved) enterEditMode(); }, 600); }
+  function cancel() { clearTimeout(timer); timer = null; }
+  function move()   { moved = true; cancel(); }
 
-  function speakCurrent() {
-    const t = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent.trim();
-    if (t) speak(t);
-  }
+  element.addEventListener('touchstart',   start,  { passive: true });
+  element.addEventListener('touchend',     cancel, { passive: true });
+  element.addEventListener('touchcancel',  cancel, { passive: true });
+  element.addEventListener('touchmove',    move,   { passive: true });
+  element.addEventListener('pointerdown',  start);
+  element.addEventListener('pointerup',    cancel);
+  element.addEventListener('pointercancel',cancel);
+  element.addEventListener('pointermove',  (e) => { if (e.movementX**2 + e.movementY**2 > 16) move(); });
+  element.addEventListener('contextmenu',  (e) => e.preventDefault());
+}
 
-  function toggleMute() {
-    muted = !muted;
-    const btn = document.getElementById('muteBtn');
-    btn.textContent = 'Ton: ' + (muted ? 'aus' : 'an');
-    btn.classList.toggle('active', !muted);
-    if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
-  }
+// ════════════════════════════════════════════
+//  PHRASE / SPEECH
+// ════════════════════════════════════════════
+const phraseEl = document.getElementById('phrase');
+let muted = false, autoSpeak = true;
 
-  function toggleAuto() {
-    autoSpeak = !autoSpeak;
-    const btn = document.getElementById('autoBtn');
-    btn.textContent = 'Auto-Vorlesen: ' + (autoSpeak ? 'an' : 'aus');
-    btn.classList.toggle('active', autoSpeak);
-  }
+function say(text) {
+  phraseEl.textContent = text;
+  phraseEl.classList.remove('placeholder');
+  phraseEl.classList.add('has-text');
+  phraseEl.classList.remove('flash');
+  void phraseEl.offsetWidth;
+  phraseEl.classList.add('flash');
+  if (autoSpeak && !muted) speak(text);
+}
 
-  function speak(text) {
-    if (!('speechSynthesis' in window) || muted) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'de-DE'; u.rate = 0.88; u.pitch = 1;
-    window.speechSynthesis.speak(u);
-  }
+function clearPhrase() {
+  phraseEl.textContent = 'Ja';
+  phraseEl.classList.remove('placeholder');
+  phraseEl.classList.add('has-text');
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
 
-  // ── Pain scale ──
-  const painGrid = document.getElementById('painGrid');
+function appendLetter(ch) {
+  const cur = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent;
+  phraseEl.textContent = cur + ch;
+  phraseEl.classList.remove('placeholder'); phraseEl.classList.add('has-text');
+}
+function appendSpace() { appendLetter(' '); }
+function backspace() {
+  if (phraseEl.classList.contains('placeholder')) return;
+  const next = phraseEl.textContent.slice(0, -1);
+  if (!next) { clearPhrase(); return; }
+  phraseEl.textContent = next;
+}
+function speakCurrent() {
+  const t = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent.trim();
+  if (t) speak(t);
+}
+function toggleMute() {
+  muted = !muted;
+  const btn = document.getElementById('muteBtn');
+  btn.textContent = 'Ton: ' + (muted ? 'aus' : 'an');
+  btn.classList.toggle('active', !muted);
+  if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
+}
+function toggleAuto() {
+  autoSpeak = !autoSpeak;
+  const btn = document.getElementById('autoBtn');
+  btn.textContent = 'Auto-Vorlesen: ' + (autoSpeak ? 'an' : 'aus');
+  btn.classList.toggle('active', autoSpeak);
+}
+function speak(text) {
+  if (!('speechSynthesis' in window) || muted) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'de-DE'; u.rate = 0.88; u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+// ════════════════════════════════════════════
+//  SCROLL
+// ════════════════════════════════════════════
+const scrollArea = document.getElementById('scrollArea');
+function scrollPage(dir) {
+  if (dir > 0 && scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 4) return;
+  if (dir < 0 && scrollArea.scrollTop <= 0) return;
+  scrollArea.scrollBy({ top: dir * scrollArea.clientHeight * 0.85, behavior: 'smooth' });
+}
+function scrollToLetters() {
+  if (editMode) return;
+  const sec = document.getElementById('sec-buch').closest('section');
+  scrollArea.scrollTo({ top: sec.offsetTop - 8, behavior: 'smooth' });
+}
+
+// ════════════════════════════════════════════
+//  PAIN SCALE
+// ════════════════════════════════════════════
+(function buildPain() {
+  const grid = document.getElementById('painGrid');
   for (let i = 0; i <= 10; i++) {
     const btn = document.createElement('button');
     btn.className = 'pain-btn';
@@ -549,54 +761,67 @@
     btn.style.background = `rgb(${r},${g},${b})`;
     btn.style.color = i <= 3 ? '#14532d' : i <= 6 ? '#451a03' : '#fff';
     btn.onclick = () => say('Mein Schmerz ist ' + i + ' von 10');
-    painGrid.appendChild(btn);
+    grid.appendChild(btn);
   }
+})();
 
-  // ── Letter grid ──
+// ════════════════════════════════════════════
+//  ALPHABET
+// ════════════════════════════════════════════
+(function buildAlpha() {
+  const container = document.getElementById('letters');
   'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß'.split('').forEach(ch => {
     const b = document.createElement('button');
     b.className = 'btn-letter';
     b.textContent = ch;
     b.setAttribute('aria-label', 'Buchstabe ' + ch);
     b.onclick = () => appendLetter(ch);
-    document.getElementById('letters').appendChild(b);
+    container.appendChild(b);
   });
+})();
 
-  // ── Keyboard navigation ──
-  const NAV_SEL = '.btn, .pain-btn, .btn-letter, .letter-actions button';
-  let navIdx = 0;
+// ════════════════════════════════════════════
+//  KEYBOARD NAV
+// ════════════════════════════════════════════
+const NAV_SEL = '#sections-container .btn:not(.btn-add-new), .pain-btn, .btn-letter, .letter-actions button';
+let navIdx = 0;
 
-  function navButtons() { return Array.from(document.querySelectorAll(NAV_SEL)); }
+function navButtons() { return Array.from(document.querySelectorAll(NAV_SEL)); }
 
-  function navFocus(idx) {
-    const btns = navButtons();
-    if (!btns.length) return;
-    idx = ((idx % btns.length) + btns.length) % btns.length;
-    if (navIdx >= 0 && btns[navIdx]) btns[navIdx].classList.remove('nav-focus');
-    navIdx = idx;
-    btns[navIdx].classList.add('nav-focus');
-    btns[navIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function navFocus(idx) {
+  const btns = navButtons();
+  if (!btns.length) return;
+  idx = ((idx % btns.length) + btns.length) % btns.length;
+  const prev = document.querySelector('.nav-focus');
+  if (prev) prev.classList.remove('nav-focus');
+  navIdx = idx;
+  btns[navIdx].classList.add('nav-focus');
+  btns[navIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function rebuildKeyboardNav() { navIdx = 0; }
+
+document.addEventListener('keydown', e => {
+  if (editMode) return;
+  const btns = navButtons();
+  switch (e.key) {
+    case 'ArrowRight': e.preventDefault(); navFocus(navIdx < 0 ? 0 : navIdx + 1); break;
+    case 'ArrowLeft':  e.preventDefault(); navFocus(navIdx <= 0 ? btns.length - 1 : navIdx - 1); break;
+    case 'ArrowUp':    e.preventDefault(); backspace(); break;
+    case 'ArrowDown':  e.preventDefault(); clearPhrase(); break;
+    case 'Enter':
+    case ' ':
+      if (navIdx >= 0 && btns[navIdx]) { e.preventDefault(); btns[navIdx].click(); }
+      break;
   }
+});
 
-  // Preselect JA on load
-  phraseEl.textContent = 'Ja';
-  phraseEl.classList.remove('placeholder');
-  phraseEl.classList.add('has-text');
-  navFocus(0);
-
-  document.addEventListener('keydown', e => {
-    const btns = navButtons();
-    switch (e.key) {
-      case 'ArrowRight': e.preventDefault(); navFocus(navIdx < 0 ? 0 : navIdx + 1); break;
-      case 'ArrowLeft':  e.preventDefault(); navFocus(navIdx <= 0 ? btns.length - 1 : navIdx - 1); break;
-      case 'ArrowUp':    e.preventDefault(); backspace(); break;
-      case 'ArrowDown':  e.preventDefault(); clearPhrase(); break;
-      case 'Enter':
-      case ' ':
-        if (navIdx >= 0 && btns[navIdx]) { e.preventDefault(); btns[navIdx].click(); }
-        break;
-    }
-  });
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+config = loadConfig();
+renderAll(config, false);
+navFocus(0);
 </script>
 </body>
 </html>
