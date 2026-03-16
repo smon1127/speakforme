@@ -827,10 +827,10 @@ function populateVoices() {
   sel.innerHTML = '';
   const de = voices.filter(v => v.lang.startsWith('de'));
   const list = de.length ? de : voices;
-  list.forEach(v => {
+  list.forEach((v, i) => {
     const opt = document.createElement('option');
     opt.value = v.name;
-    opt.textContent = v.name.replace(/([A-Z])/g, ' $1').trim();
+    opt.textContent = 'Voice ' + String.fromCharCode(65 + i);
     sel.appendChild(opt);
   });
   if (prev && [...sel.options].some(o => o.value === prev)) {
