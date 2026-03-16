@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Kommunikationshilfe Krankenhaus</title>
+  <meta name="theme-color" content="#0c4a6e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #f0f9ff;
+      --card: #ffffff;
+      --text: #0c4a6e;
+      --muted: #0369a1;
+      --line: #bae6fd;
+      --accent: #0284c7;
+      --radius: 18px;
+      --shadow: 0 4px 20px rgba(12,74,110,.10);
+      --bar-top-bg: #0c4a6e;
+      --bar-bottom-bg: #ffffff;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ═══ TOP BAR ═══ */
+    .top-bar {
+      flex-shrink: 0;
+      background: var(--bar-top-bg);
+      padding: env(safe-area-inset-top, 0) 12px 0;
+      box-shadow: 0 2px 16px rgba(12,74,110,.30);
+      z-index: 10;
+    }
+    .top-bar-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* shared scroll-btn shape — used in both bars */
+    .scroll-btn {
+      width: 100%;
+      height: 38px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .15s, transform .12s;
+      letter-spacing: .02em;
+    }
+    .scroll-btn:active { transform: scale(.97); }
+
+    /* top bar variant — sits above the phrase */
+    .scroll-btn-up {
+      background: rgba(255,255,255,.10);
+      color: #7dd3fc;
+      border: 1.5px solid rgba(125,211,252,.30);
+      margin-bottom: 8px;
+    }
+    .scroll-btn-up:hover  { background: rgba(255,255,255,.18); }
+    .scroll-btn-up:active { background: rgba(255,255,255,.24); }
+
+    /* bottom bar variant — sits below vorlesen */
+    .scroll-btn-down {
+      background: #e0f2fe;
+      color: #0284c7;
+      border: 1.5px solid var(--line);
+      margin-top: 8px;
+    }
+    .scroll-btn-down:hover  { background: #bae6fd; }
+    .scroll-btn-down:active { background: #7dd3fc; }
+
+    .phrase-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 5px;
+    }
+    #phrase {
+      width: 100%;
+      min-height: 52px;
+      background: rgba(255,255,255,.12);
+      border: 2px solid rgba(125,211,252,.4);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      word-break: break-word;
+      transition: background .15s;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
+    #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
+
+    /* ═══ SCROLL AREA ═══ */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .scroll-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 12px 12px 16px;
+    }
+
+    /* ═══ BOTTOM BAR ═══ */
+    .bottom-bar {
+      flex-shrink: 0;
+      background: var(--bar-bottom-bg);
+      border-top: 1px solid var(--line);
+      padding: 10px 12px calc(env(safe-area-inset-bottom, 0) + 10px);
+      box-shadow: 0 -4px 20px rgba(12,74,110,.08);
+      z-index: 10;
+    }
+    .bottom-bar-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .btn-speak {
+      display: block;
+      width: 100%;
+      min-height: 50px;
+      border-radius: 14px;
+      border: none;
+      background: #0284c7;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter .15s, transform .1s;
+    }
+    .btn-speak:hover  { filter: brightness(.92); }
+    .btn-speak:active { transform: scale(.97); filter: brightness(.85); }
+
+    /* ═══ TOOLBAR ═══ */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0 0 14px;
+    }
+    .toolbar button {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background .15s, transform .1s;
+    }
+    .toolbar button:hover  { background: #e0f2fe; }
+    .toolbar button:active { transform: scale(.97); }
+    .toolbar button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ═══ SECTIONS ═══ */
+    .section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    /* ═══ BUTTONS ═══ */
+    .grid { display: grid; gap: 9px; }
+    .col-2 { grid-template-columns: 1fr 1fr; }
+    .col-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .btn {
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      color: var(--text);
+      padding: 14px 10px;
+      min-height: 60px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(12,74,110,.08);
+      line-height: 1.2;
+      transition: filter .12s, transform .1s, box-shadow .12s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .btn:hover  { filter: brightness(.93); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(12,74,110,.16); }
+    .btn:active { filter: brightness(.83); transform: scale(.95) translateY(0); box-shadow: none; }
+    .btn small  { font-size: 11px; font-weight: 500; opacity: .65; }
+
+    .btn-huge { min-height: 80px; font-size: 26px; }
+    .btn-big  { min-height: 68px; font-size: 20px; }
+
+    .btn-yes  { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .btn-no   { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .btn-urg  { background: #fff7ed; color: #9a3412; border-color: #fdba74; }
+    .btn-blue { background: #e0f2fe; color: #0c4a6e; border-color: #7dd3fc; }
+
+    /* ═══ TWO-COL ═══ */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .two-col .section { margin-bottom: 0; }
+
+    /* ═══ PAIN SCALE ═══ */
+    .pain-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
+    .pain-btn {
+      border: none;
+      border-radius: 10px;
+      min-height: 54px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: filter .12s, transform .1s;
+    }
+    .pain-btn:hover  { filter: brightness(.88); transform: translateY(-1px); }
+    .pain-btn:active { filter: brightness(.78); transform: scale(.92) translateY(0); }
+
+    /* ═══ LETTER GRID ═══ */
+    .letter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+      gap: 7px;
+    }
+    .btn-letter {
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--text);
+      min-height: 52px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .12s, transform .1s;
+    }
+    .btn-letter:hover  { background: #e0f2fe; transform: translateY(-1px); }
+    .btn-letter:active { background: #bae6fd; transform: scale(.92) translateY(0); }
+
+    .letter-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .letter-actions button {
+      flex: 1;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: #f1f5f9;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .12s, transform .1s;
+    }
+    .letter-actions button:hover  { background: #e0f2fe; }
+    .letter-actions button:active { background: #bae6fd; transform: scale(.97); }
+
+    /* ═══ FOOTER ═══ */
+    .footer { text-align: center; font-size: 13px; color: var(--muted); padding: 4px 0 8px; opacity: .65; }
+
+    /* ═══ KEYBOARD FOCUS ═══ */
+    .nav-focus {
+      outline: 3px solid #0ea5e9 !important;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 6px rgba(14,165,233,.25) !important;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ═══ FLASH ═══ */
+    @keyframes flash { 0% { background: #bbf7d0; } 100% { background: transparent; } }
+    .flash { animation: flash .35s ease-out; }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 480px) {
+      .two-col { grid-template-columns: 1fr; }
+      .pain-grid { grid-template-columns: repeat(6, 1fr); }
+      .btn-huge { font-size: 22px; min-height: 72px; }
+      .btn-big  { font-size: 18px; }
+      .col-3    { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 340px) {
+      .pain-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<header class="top-bar" role="banner">
+  <div class="top-bar-inner">
+    <button class="scroll-btn scroll-btn-up" onclick="scrollPage(-1)" aria-label="Eine Seite nach oben">
+      <i class="fa-solid fa-chevron-up"></i> Nach oben
+    </button>
+    <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
+    <div id="phrase" class="placeholder"
+         aria-live="assertive"
+         aria-label="Aktuelle Auswahl — tippen zum Buchstaben-Bereich springen"
+         onclick="scrollToLetters()" role="button" tabindex="0">Hier tippen …</div>
+  </div>
+</header>
+
+<!-- ═══ SCROLLABLE CONTENT ═══ -->
+<main class="scroll-area" id="scrollArea">
+  <div class="scroll-inner">
+
+    <div class="toolbar" role="toolbar" aria-label="Einstellungen">
+      <button onclick="toggleMute()" id="muteBtn" aria-pressed="true">Ton: an</button>
+      <button onclick="toggleAuto()" id="autoBtn" class="active" aria-pressed="true">Auto-Vorlesen: an</button>
+    </div>
+
+    <!-- SCHNELL -->
+    <section class="section" aria-labelledby="sec-schnell">
+      <div class="section-title" id="sec-schnell">Schnell — Wichtigstes zuerst</div>
+      <div class="grid col-2" style="margin-bottom:9px">
+        <button class="btn btn-huge btn-yes" onclick="say('Ja')">JA</button>
+        <button class="btn btn-huge btn-no"  onclick="say('Nein')">NEIN</button>
+      </div>
+      <div class="grid col-2">
+        <button class="btn btn-big btn-urg"  onclick="say('Ich habe Schmerzen')">Schmerzen</button>
+        <button class="btn btn-big btn-urg"  onclick="say('Ich bekomme schlecht Luft')">Luft <small>schlechte</small></button>
+        <button class="btn btn-big btn-blue" onclick="say('Ich habe Durst')">Durst</button>
+        <button class="btn btn-big btn-no"   onclick="say('Bitte Hilfe')">Hilfe</button>
+      </div>
+    </section>
+
+    <!-- BEDÜRFNISSE + GEFÜHLE -->
+    <div class="two-col">
+      <section class="section" aria-labelledby="sec-bed">
+        <div class="section-title" id="sec-bed">Bedürfnisse</div>
+        <div class="grid" style="grid-template-columns:1fr 1fr">
+          <button class="btn" onclick="say('Ich habe Durst')">Durst</button>
+          <button class="btn" onclick="say('Mein Mund ist trocken')">Trockener Mund</button>
+          <button class="btn" onclick="say('Mir ist kalt')">Kalt</button>
+          <button class="btn" onclick="say('Mir ist warm')">Warm</button>
+          <button class="btn" onclick="say('Bitte anders lagern')">Anders lagern</button>
+          <button class="btn" onclick="say('Bitte Decke')">Decke</button>
+          <button class="btn" onclick="say('Bitte Mundpflege')">Mundpflege</button>
+          <button class="btn" onclick="say('Bitte absaugen')">Absaugen</button>
+          <button class="btn btn-urg" onclick="say('Bitte Pflegepersonal rufen')">Pflege rufen</button>
+          <button class="btn btn-urg" onclick="say('Bitte Arzt rufen')">Arzt rufen</button>
+          <button class="btn" onclick="say('Ich möchte schlafen')">Schlafen</button>
+          <button class="btn" onclick="say('Ich bin müde')">Müde</button>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="sec-gef">
+        <div class="section-title" id="sec-gef">Gefühle & Zustand</div>
+        <div class="grid" style="grid-template-columns:1fr 1fr">
+          <button class="btn btn-urg"  onclick="say('Ich habe Angst')">Angst</button>
+          <button class="btn"          onclick="say('Mir ist unwohl')">Unwohl</button>
+          <button class="btn"          onclick="say('Mir ist übel')">Übel</button>
+          <button class="btn"          onclick="say('Mir ist schwindelig')">Schwindelig</button>
+          <button class="btn"          onclick="say('Ich bin verwirrt')">Verwirrt</button>
+          <button class="btn btn-yes"  onclick="say('Es geht besser')">Besser</button>
+          <button class="btn btn-blue" onclick="say('Bitte bleib bei mir')">Bleib bei mir</button>
+          <button class="btn btn-blue" onclick="say('Ich möchte Familie sehen')">Familie</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- SCHMERZSKALA -->
+    <section class="section" aria-labelledby="sec-pain">
+      <div class="section-title" id="sec-pain">Schmerzskala — 0 (kein) bis 10 (maximal)</div>
+      <div class="pain-grid" id="painGrid" role="group" aria-label="Schmerzskala 0 bis 10"></div>
+    </section>
+
+    <!-- WO TUT ES WEH -->
+    <section class="section" aria-labelledby="sec-wo">
+      <div class="section-title" id="sec-wo">Wo tut es weh?</div>
+      <div class="grid col-3">
+        <button class="btn" onclick="say('Schmerzen in der Brust')">Brust</button>
+        <button class="btn" onclick="say('Schmerzen im Hals')">Hals</button>
+        <button class="btn" onclick="say('Schmerzen am Mund')">Mund</button>
+        <button class="btn" onclick="say('Schmerzen im Bauch')">Bauch</button>
+        <button class="btn" onclick="say('Schmerzen im Rücken')">Rücken</button>
+        <button class="btn" onclick="say('Schmerzen im Arm')">Arm</button>
+        <button class="btn" onclick="say('Schmerzen in der Hand')">Hand</button>
+        <button class="btn" onclick="say('Schmerzen im Bein')">Bein</button>
+        <button class="btn" onclick="say('Schmerzen am Kopf')">Kopf</button>
+      </div>
+    </section>
+
+    <!-- BUCHSTABEN -->
+    <section class="section" aria-labelledby="sec-buch">
+      <div class="section-title" id="sec-buch">Buchstaben — einzelne Wörter tippen</div>
+      <div class="letter-grid" id="letters" role="group" aria-label="Buchstaben"></div>
+      <div class="letter-actions">
+        <button onclick="backspace()"    aria-label="Letzten Buchstaben löschen"><i class="fa-solid fa-delete-left"></i> Löschen</button>
+        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
+        <button onclick="speakCurrent()" aria-label="Text vorlesen" style="background:#e0f2fe;color:#0c4a6e"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </section>
+
+    <div class="footer">Offline-Webseite für das iPhone — Safari: Teilen → Zum Home-Bildschirm</div>
+  </div>
+</main>
+
+<!-- ═══ BOTTOM BAR ═══ -->
+<nav class="bottom-bar" aria-label="Aktionen">
+  <div class="bottom-bar-inner">
+    <button class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
+      <i class="fa-solid fa-volume-high"></i> Vorlesen
+    </button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten" style="flex:1">
+        Nach unten <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <button onclick="location.reload()" aria-label="Seite neu laden"
+        style="flex-shrink:0;width:50px;height:38px;border-radius:12px;border:1.5px solid var(--line);background:#f1f5f9;color:#0369a1;font-size:16px;cursor:pointer;transition:background .15s,transform .1s"
+        onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f1f5f9'"
+        onmousedown="this.style.transform='scale(.95)'" onmouseup="this.style.transform=''">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const phraseEl  = document.getElementById('phrase');
+  const scrollArea = document.getElementById('scrollArea');
+  let muted = false;
+  let autoSpeak = true;
+
+  function scrollPage(dir) {
+    scrollArea.scrollBy({ top: dir * scrollArea.clientHeight * 0.85, behavior: 'smooth' });
+  }
+
+  function scrollToLetters() {
+    const sec = document.getElementById('sec-buch').closest('section');
+    scrollArea.scrollTo({ top: sec.offsetTop - 8, behavior: 'smooth' });
+  }
+
+  function say(text) {
+    phraseEl.textContent = text;
+    phraseEl.classList.remove('placeholder');
+    phraseEl.classList.add('has-text');
+    phraseEl.classList.remove('flash');
+    void phraseEl.offsetWidth;
+    phraseEl.classList.add('flash');
+    if (autoSpeak && !muted) speak(text);
+  }
+
+  function clearPhrase() {
+    phraseEl.textContent = 'Hier tippen …';
+    phraseEl.classList.remove('has-text');
+    phraseEl.classList.add('placeholder');
+    window.speechSynthesis && window.speechSynthesis.cancel();
+  }
+
+  function appendLetter(ch) {
+    const cur = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent;
+    phraseEl.textContent = cur + ch;
+    phraseEl.classList.remove('placeholder');
+    phraseEl.classList.add('has-text');
+  }
+
+  function appendSpace() { appendLetter(' '); }
+
+  function backspace() {
+    if (phraseEl.classList.contains('placeholder')) return;
+    const next = phraseEl.textContent.slice(0, -1);
+    if (!next) { clearPhrase(); return; }
+    phraseEl.textContent = next;
+  }
+
+  function speakCurrent() {
+    const t = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent.trim();
+    if (t) speak(t);
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    const btn = document.getElementById('muteBtn');
+    btn.textContent = 'Ton: ' + (muted ? 'aus' : 'an');
+    btn.classList.toggle('active', !muted);
+    if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
+  }
+
+  function toggleAuto() {
+    autoSpeak = !autoSpeak;
+    const btn = document.getElementById('autoBtn');
+    btn.textContent = 'Auto-Vorlesen: ' + (autoSpeak ? 'an' : 'aus');
+    btn.classList.toggle('active', autoSpeak);
+  }
+
+  function speak(text) {
+    if (!('speechSynthesis' in window) || muted) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'de-DE'; u.rate = 0.88; u.pitch = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  // ── Pain scale ──
+  const painGrid = document.getElementById('painGrid');
+  for (let i = 0; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'pain-btn';
+    btn.textContent = i;
+    btn.setAttribute('aria-label', 'Schmerz ' + i + ' von 10');
+    const r = Math.round(i <= 5 ? (i/5)*210 : 210+((i-5)/5)*45);
+    const g = Math.round(i <= 5 ? 160-(i/5)*40 : 120-((i-5)/5)*90);
+    const b = i <= 5 ? Math.round(80-(i/5)*60) : 20;
+    btn.style.background = `rgb(${r},${g},${b})`;
+    btn.style.color = i <= 3 ? '#14532d' : i <= 6 ? '#451a03' : '#fff';
+    btn.onclick = () => say('Mein Schmerz ist ' + i + ' von 10');
+    painGrid.appendChild(btn);
+  }
+
+  // ── Letter grid ──
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß'.split('').forEach(ch => {
+    const b = document.createElement('button');
+    b.className = 'btn-letter';
+    b.textContent = ch;
+    b.setAttribute('aria-label', 'Buchstabe ' + ch);
+    b.onclick = () => appendLetter(ch);
+    document.getElementById('letters').appendChild(b);
+  });
+
+  // ── Keyboard navigation ──
+  const NAV_SEL = '.btn, .pain-btn, .btn-letter, .letter-actions button';
+  let navIdx = 0;
+
+  function navButtons() { return Array.from(document.querySelectorAll(NAV_SEL)); }
+
+  function navFocus(idx) {
+    const btns = navButtons();
+    if (!btns.length) return;
+    idx = ((idx % btns.length) + btns.length) % btns.length;
+    if (navIdx >= 0 && btns[navIdx]) btns[navIdx].classList.remove('nav-focus');
+    navIdx = idx;
+    btns[navIdx].classList.add('nav-focus');
+    btns[navIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Preselect JA on load
+  phraseEl.textContent = 'Ja';
+  phraseEl.classList.remove('placeholder');
+  phraseEl.classList.add('has-text');
+  navFocus(0);
+
+  document.addEventListener('keydown', e => {
+    const btns = navButtons();
+    switch (e.key) {
+      case 'ArrowRight': e.preventDefault(); navFocus(navIdx < 0 ? 0 : navIdx + 1); break;
+      case 'ArrowLeft':  e.preventDefault(); navFocus(navIdx <= 0 ? btns.length - 1 : navIdx - 1); break;
+      case 'ArrowUp':    e.preventDefault(); backspace(); break;
+      case 'ArrowDown':  e.preventDefault(); clearPhrase(); break;
+      case 'Enter':
+      case ' ':
+        if (navIdx >= 0 && btns[navIdx]) { e.preventDefault(); btns[navIdx].click(); }
+        break;
+    }
+  });
+</script>
+</body>
+</html>
