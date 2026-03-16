@@ -738,16 +738,13 @@ function speak(text) {
 // ════════════════════════════════════════════
 const scrollArea = document.getElementById('scrollArea');
 function scrollPage(dir) {
+  const max = scrollArea.scrollHeight - scrollArea.clientHeight;
   const step = scrollArea.clientHeight * 0.85;
-  if (dir > 0) {
-    const remaining = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight;
-    if (remaining <= 0) return;
-    scrollArea.scrollBy({ top: Math.min(step, remaining), behavior: 'smooth' });
-  } else {
-    const remaining = scrollArea.scrollTop;
-    if (remaining <= 0) return;
-    scrollArea.scrollBy({ top: -Math.min(step, remaining), behavior: 'smooth' });
-  }
+  const target = dir > 0
+    ? Math.min(scrollArea.scrollTop + step, max)
+    : Math.max(scrollArea.scrollTop - step, 0);
+  if (target === scrollArea.scrollTop) return;
+  scrollArea.scrollTo({ top: target, behavior: 'smooth' });
 }
 function scrollToLetters() {
   if (editMode) return;
