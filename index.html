@@ -311,8 +311,8 @@
       <i class="fa-solid fa-chevron-up"></i> Nach oben
     </button>
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
-    <div id="phrase" class="has-text" aria-live="assertive"
-         onclick="scrollToLetters()" role="button" tabindex="0">Ja</div>
+    <div id="phrase" class="placeholder" aria-live="assertive"
+         onclick="scrollToLetters()" role="button" tabindex="0">Antippen zum Buchstabieren …</div>
   </div>
 </header>
 
@@ -761,9 +761,9 @@ function say(text) {
 }
 
 function clearPhrase() {
-  phraseEl.textContent = 'Ja';
-  phraseEl.classList.remove('placeholder');
-  phraseEl.classList.add('has-text');
+  phraseEl.textContent = 'Antippen zum Buchstabieren …';
+  phraseEl.classList.add('placeholder');
+  phraseEl.classList.remove('has-text');
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
