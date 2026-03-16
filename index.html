@@ -465,6 +465,8 @@
   let autoSpeak = true;
 
   function scrollPage(dir) {
+    if (dir > 0 && scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 4) return;
+    if (dir < 0 && scrollArea.scrollTop <= 0) return;
     scrollArea.scrollBy({ top: dir * scrollArea.clientHeight * 0.85, behavior: 'smooth' });
   }
 
