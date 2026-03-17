@@ -94,24 +94,24 @@
       font-size: 11px; font-weight: 700; letter-spacing: .10em;
       text-transform: uppercase; color: #7dd3fc; margin-bottom: 5px;
     }
-    .phrase-wrap { position: relative; margin-bottom: 10px; }
     #phrase {
-      position: relative; width: 100%; min-height: 52px;
+      width: 100%; min-height: 52px; margin-bottom: 10px;
       background: rgba(255,255,255,.12); border: 2px solid rgba(125,211,252,.4);
-      border-radius: 14px; padding: 10px 46px 10px 14px; font-size: 22px; font-weight: 800;
+      border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 800;
       color: #fff; line-height: 1.25; word-break: break-word;
       transition: background .15s; cursor: pointer;
-      display: flex; align-items: center;
+      display: flex; align-items: center; gap: 8px;
     }
     #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
     #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
+    #phrase-text { flex: 1; }
     #phrase-clear {
-      display: none; position: absolute; right: 8px; top: 0; bottom: 0; margin: auto 0;
+      display: none; flex-shrink: 0; margin-left: auto;
       background: rgba(255,255,255,.18); border: none; border-radius: 8px;
       color: #fff; width: 34px; height: 34px; cursor: pointer; font-size: 16px;
       padding: 0; line-height: 1;
     }
-    #phrase.has-text + #phrase-clear { display: flex; align-items: center; justify-content: center; }
+    #phrase.has-text #phrase-clear { display: flex; align-items: center; justify-content: center; }
     #phrase-clear:active { background: rgba(255,255,255,.30); }
 
     /* ═══ SCROLL AREA ═══ */
@@ -405,10 +405,10 @@
   </button>
   <div class="top-bar-inner">
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
-    <div class="phrase-wrap">
-      <div id="phrase" class="placeholder" aria-live="assertive"
-           onclick="scrollToLetters()" role="button" tabindex="0">Antippen zum Buchstabieren …</div>
-      <button id="phrase-clear" onclick="clearPhrase()" aria-label="Eingabe löschen"><i class="fa-solid fa-xmark"></i></button>
+    <div id="phrase" class="placeholder" aria-live="assertive"
+         onclick="scrollToLetters()" role="button" tabindex="0">
+      <span id="phrase-text">Antippen zum Buchstabieren …</span>
+      <button id="phrase-clear" onclick="event.stopPropagation();clearPhrase()" aria-label="Eingabe löschen"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
 </header>
@@ -826,7 +826,7 @@ function updateUIStrings() {
   if (downText) downText.textContent = t('scrollDown');
   const phraseLabel = document.querySelector('.phrase-label');
   if (phraseLabel) phraseLabel.textContent = t('phraseLabel');
-  if (phraseEl && phraseEl.classList.contains('placeholder')) phraseEl.textContent = t('phrasePlaceholder');
+  if (phraseEl && phraseEl.classList.contains('placeholder')) phraseTextEl.textContent = t('phrasePlaceholder');
   const muteBtn = document.getElementById('muteBtn');
   if (muteBtn) muteBtn.textContent = muted ? t('muteOff') : t('muteOn');
   const autoBtn = document.getElementById('autoBtn');
@@ -1194,11 +1194,11 @@ function attachLongPress(element) {
 //  PHRASE / SPEECH
 // ════════════════════════════════════════════
 const phraseEl = document.getElementById('phrase');
-const phraseClearBtn = document.getElementById('phrase-clear');
+const phraseTextEl = document.getElementById('phrase-text');
 let muted = false, autoSpeak = true;
 
 function say(text) {
-  phraseEl.textContent = text;
+  phraseTextEl.textContent = text;
   phraseEl.classList.remove('placeholder');
   phraseEl.classList.add('has-text');
   phraseEl.classList.remove('flash');
@@ -1208,26 +1208,26 @@ function say(text) {
 }
 
 function clearPhrase() {
-  phraseEl.textContent = t('phrasePlaceholder');
+  phraseTextEl.textContent = t('phrasePlaceholder');
   phraseEl.classList.add('placeholder');
   phraseEl.classList.remove('has-text');
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
 function appendLetter(ch) {
-  const cur = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent;
-  phraseEl.textContent = cur + ch;
+  const cur = phraseEl.classList.contains('placeholder') ? '' : phraseTextEl.textContent;
+  phraseTextEl.textContent = cur + ch;
   phraseEl.classList.remove('placeholder'); phraseEl.classList.add('has-text');
 }
 function appendSpace() { appendLetter(' '); }
 function backspace() {
   if (phraseEl.classList.contains('placeholder')) return;
-  const next = phraseEl.textContent.slice(0, -1);
+  const next = phraseTextEl.textContent.slice(0, -1);
   if (!next) { clearPhrase(); return; }
-  phraseEl.textContent = next;
+  phraseTextEl.textContent = next;
 }
 function speakCurrent() {
-  const t = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent.trim();
+  const t = phraseEl.classList.contains('placeholder') ? '' : phraseTextEl.textContent.trim();
   if (t) speak(t);
 }
 function toggleMute() {
