@@ -324,6 +324,55 @@
     .modal-btn-cancel { background: #f1f5f9; color: var(--text); }
     .modal-btn-save   { background: #0284c7; color: #fff; }
 
+    /* ═══ EL MODAL ═══ */
+    #elModal {
+      border: none; border-radius: 20px; padding: 0;
+      width: min(420px, calc(100vw - 32px));
+      box-shadow: 0 20px 60px rgba(12,74,110,.25);
+      background: #fff;
+    }
+    #elModal::backdrop { background: rgba(12,74,110,.5); backdrop-filter: blur(4px); }
+    .el-modal-header {
+      background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 20px 16px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .el-modal-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0; color: #fff;
+    }
+    .el-modal-brand { color: #fff; }
+    .el-modal-brand-name { font-size: 18px; font-weight: 800; line-height: 1.2; }
+    .el-modal-brand-sub  { font-size: 12px; opacity: .75; margin-top: 2px; }
+    .el-modal-body { padding: 20px 20px 20px; }
+    .el-key-label-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .el-key-label-row a {
+      font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0;
+      color: var(--accent); text-decoration: none;
+    }
+    .el-key-label-row a:hover { text-decoration: underline; }
+    .el-info-row {
+      display: flex; align-items: center; gap: 6px;
+      background: #f0f9ff; border-radius: 10px; padding: 9px 12px;
+      font-size: 12px; color: var(--muted); margin-top: 10px;
+    }
+    .el-info-row i { color: var(--accent); flex-shrink: 0; }
+    #el-test-result {
+      min-height: 20px; font-size: 13px; font-weight: 600;
+      margin-top: 10px; line-height: 1.4; word-break: break-word;
+    }
+    .modal-btn-test {
+      flex: 1; min-height: 48px; border-radius: 14px; border: 1.5px solid var(--line);
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      background: #e0f2fe; color: #0369a1;
+    }
+
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 480px) {
       .two-col { grid-template-columns: 1fr; }
@@ -462,18 +511,30 @@
 
 <!-- ═══ ELEVENLABS MODAL ═══ -->
 <dialog id="elModal" aria-labelledby="el-title">
-  <div class="modal-inner">
-    <div class="modal-title" id="el-title">ElevenLabs</div>
-    <div class="modal-field">
-      <label for="el-key-input">API-Schlüssel</label>
-      <input id="el-key-input" type="text" placeholder="pk_…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
+  <div class="el-modal-header">
+    <div class="el-modal-icon"><i class="fa-solid fa-waveform-lines"></i></div>
+    <div class="el-modal-brand">
+      <div class="el-modal-brand-name" id="el-title">ElevenLabs</div>
+      <div class="el-modal-brand-sub">KI-Stimmen für natürliche Sprache</div>
     </div>
-    <p style="color:var(--muted);font-size:13px;margin:0 0 8px;line-height:1.5">Benötigt einen <strong>Public Key</strong> (beginnt mit <code>pk_</code>) — erstelle ihn unter elevenlabs.io → API Keys → Public. Wird nur lokal gespeichert.</p>
-    <p id="el-test-result" style="font-size:13px;margin:0 0 18px;min-height:18px"></p>
-    <div class="modal-actions">
-      <button class="modal-btn-cancel" onclick="closeELModal()">Abbrechen</button>
-      <button class="modal-btn-cancel" onclick="testELKey()" style="background:#e0f2fe;color:#0369a1;border-color:#7dd3fc">Test</button>
-      <button class="modal-btn-save" onclick="saveELKey()">Verbinden</button>
+  </div>
+  <div class="el-modal-body">
+    <div class="modal-field">
+      <div class="el-key-label-row">
+        <span id="el-key-label">API-Schlüssel</span>
+        <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">Schlüssel erstellen →</a>
+      </div>
+      <input id="el-key-input" type="text" placeholder="sk_…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
+    </div>
+    <div class="el-info-row">
+      <i class="fa-solid fa-lock"></i>
+      <span id="el-hint">Schlüssel wird nur lokal auf diesem Gerät gespeichert. Leer lassen zum Trennen.</span>
+    </div>
+    <div id="el-test-result"></div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="modal-btn-cancel" onclick="closeELModal()" id="el-cancel-btn">Abbrechen</button>
+      <button class="modal-btn-test"   onclick="testELKey()"   id="el-test-btn">Test</button>
+      <button class="modal-btn-save"   onclick="saveELKey()"   id="el-connect-btn">Verbinden</button>
     </div>
   </div>
 </dialog>
@@ -793,15 +854,16 @@ function updateUIStrings() {
   if (shareBtns[1]) shareBtns[1].textContent = t('shareCopy');
   const elTitleEl  = document.getElementById('el-title');
   if (elTitleEl) elTitleEl.textContent = t('elTitle');
-  const elKeyLabel = document.querySelector('label[for="el-key-input"]');
-  if (elKeyLabel) elKeyLabel.textContent = t('elKeyLabel');
+  const elKeyLabelEl = document.getElementById('el-key-label');
+  if (elKeyLabelEl) elKeyLabelEl.textContent = t('elKeyLabel');
   const elKeyInp = document.getElementById('el-key-input');
   if (elKeyInp) elKeyInp.placeholder = t('elKeyPlaceholder');
-  const elHintEl = document.querySelector('#elModal p');
+  const elHintEl = document.getElementById('el-hint');
   if (elHintEl) elHintEl.textContent = t('elHint');
-  const elBtns = document.querySelectorAll('#elModal .modal-actions button');
-  if (elBtns[0]) elBtns[0].textContent = t('elCancel');
-  if (elBtns[2]) elBtns[2].textContent = t('elConnect');
+  const elCancelBtn  = document.getElementById('el-cancel-btn');
+  const elConnectBtn = document.getElementById('el-connect-btn');
+  if (elCancelBtn)  elCancelBtn.textContent  = t('elCancel');
+  if (elConnectBtn) elConnectBtn.textContent = t('elConnect');
   const modalTitleEl  = document.getElementById('modal-title');
   if (modalTitleEl) modalTitleEl.textContent = t('editTitle');
   const lblLabel = document.querySelector('label[for="modal-label"]');
