@@ -1266,15 +1266,21 @@ let currentLang = 'de';
 
 // ── ElevenLabs state ──
 const LS_EL_KEY = 'el_api_key';
+const LS_VOICE_KEY = 'preferred_voice';
 let elApiKey = localStorage.getItem(LS_EL_KEY) || '';
 let elVoices = elApiKey ? [...EL_DEFAULT_VOICES] : [];
 let selectedELVoiceId = null;
 let elAbortCtrl = null;
 let elAudio = null;
 
+function findHuskey(sel) {
+  return [...sel.options].find(o => o.value.startsWith('el:') && /husk/i.test(o.textContent));
+}
+
 function populateVoices() {
   const sel = document.getElementById('voiceSelect');
-  const prev = sel.value;
+  const saved = localStorage.getItem(LS_VOICE_KEY);
+  const prev = saved || sel.value;
   sel.innerHTML = '';
 
   // Device voices: up to 6, prefer current language, fall back to all
@@ -1306,21 +1312,25 @@ function populateVoices() {
     sel.appendChild(grp);
   }
 
-  // Restore previous selection, or auto-select preferred EL voice, or first option
+  // Restore saved/previous selection, or auto-select Huskey, or first option
   if (prev && [...sel.options].some(o => o.value === prev)) {
     sel.value = prev;
   } else {
-    const preferred = [...sel.options].find(o =>
-      o.value.startsWith('el:') && /huskey/i.test(o.textContent)
-    );
-    sel.value = preferred ? preferred.value : (sel.options[0]?.value || '');
+    const huskey = findHuskey(sel);
+    sel.value = huskey ? huskey.value : (sel.options[0]?.value || '');
   }
-  onVoiceChange();
+  syncVoiceState();
+}
+
+function syncVoiceState() {
+  const val = document.getElementById('voiceSelect').value;
+  selectedELVoiceId = val.startsWith('el:') ? val.slice(3) : null;
 }
 
 function onVoiceChange() {
+  syncVoiceState();
   const val = document.getElementById('voiceSelect').value;
-  selectedELVoiceId = val.startsWith('el:') ? val.slice(3) : null;
+  if (val) localStorage.setItem(LS_VOICE_KEY, val);
 }
 
 if ('speechSynthesis' in window) {
@@ -1331,9 +1341,10 @@ populateVoices();
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
   fetchELVoices().then(() => {
+    if (localStorage.getItem(LS_VOICE_KEY)) return; // respect existing saved preference
     const sel = document.getElementById('voiceSelect');
-    const huskey = [...sel.options].find(o => o.value.startsWith('el:') && /huskey/i.test(o.textContent));
-    if (huskey) { sel.value = huskey.value; onVoiceChange(); }
+    const huskey = findHuskey(sel);
+    if (huskey) { sel.value = huskey.value; syncVoiceState(); localStorage.setItem(LS_VOICE_KEY, huskey.value); }
   });
 }
 
