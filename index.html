@@ -1286,19 +1286,20 @@ async function speakEL(text, voiceId) {
 }
 
 async function fetchELVoices() {
-  // Silently tries to replace default voices with the user's actual EL voice list
-  if (!elApiKey) return;
+  if (!elApiKey) return false;
   try {
     const res = await fetch('https://api.elevenlabs.io/v1/voices', {
       headers: { 'xi-api-key': elApiKey }
     });
-    if (!res.ok) return; // silently fail — default voices still work
+    if (!res.ok) return false;
     const data = await res.json();
     if (data.voices?.length) {
       elVoices = data.voices;
       populateVoices();
+      return true;
     }
-  } catch(e) { /* keep default voices */ }
+  } catch(e) {}
+  return false;
 }
 
 function openELModal() {
@@ -1326,8 +1327,18 @@ async function testELKey() {
       const tier = j?.subscription?.tier || j?.tier || 'ok';
       const chars = j?.subscription?.character_count ?? j?.character_count;
       const left = j?.subscription?.character_limit ?? j?.character_limit;
+      // Also fetch voices to show real IDs
+      let voiceInfo = '';
+      try {
+        const vres = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': val } });
+        if (vres.ok) {
+          const vdata = await vres.json();
+          const names = (vdata.voices || []).slice(0, 3).map(v => v.name).join(', ');
+          voiceInfo = ' · ' + (vdata.voices?.length || 0) + ' Stimmen (' + names + '…)';
+        }
+      } catch(e) {}
       res_el.style.color = 'green';
-      res_el.textContent = '✓ Schlüssel gültig · ' + tier + (left != null ? ' · ' + (left - (chars||0)) + ' Credits' : '');
+      res_el.textContent = '✓ Gültig · ' + tier + (left != null ? ' · ' + (left - (chars||0)) + ' Credits' : '') + voiceInfo;
     } else {
       const d = j?.detail;
       const info = typeof d === 'string' ? d : (d?.code || '') + (d?.message ? ': ' + d.message : '');
@@ -1354,12 +1365,18 @@ async function saveELKey() {
   }
   elApiKey = val;
   localStorage.setItem(LS_EL_KEY, val);
-  elVoices = [...EL_DEFAULT_VOICES]; // available immediately
+  elVoices = []; // clear — no TTS until real voices arrive
   document.getElementById('elBtn').classList.add('active');
-  populateVoices();
+  showToast('Stimmen werden geladen …');
+  const ok = await fetchELVoices();
   const preview = val.length > 8 ? val.slice(0, 4) + '…' + val.slice(-4) : val;
-  showToast(t('toastElConnected') + ' · ' + preview);
-  fetchELVoices(); // replace with user's actual voices in background
+  if (ok) {
+    showToast(t('toastElConnected') + ' · ' + preview + ' · ' + elVoices.length + ' Stimmen');
+  } else {
+    elVoices = [...EL_DEFAULT_VOICES]; // fallback only if fetch fails
+    populateVoices();
+    showToast(t('toastElConnected') + ' · ' + preview + ' (Standardstimmen)');
+  }
 }
 
 // ════════════════════════════════════════════
