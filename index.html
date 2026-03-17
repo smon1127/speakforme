@@ -1329,9 +1329,10 @@ async function testELKey() {
       res_el.style.color = 'green';
       res_el.textContent = '✓ Schlüssel gültig · ' + tier + (left != null ? ' · ' + (left - (chars||0)) + ' Credits' : '');
     } else {
-      const code = j?.detail?.code || j?.detail || '';
+      const d = j?.detail;
+      const info = typeof d === 'string' ? d : (d?.code || '') + (d?.message ? ': ' + d.message : '');
       res_el.style.color = 'red';
-      res_el.textContent = '✗ ' + res.status + (code ? ' · ' + code : '');
+      res_el.textContent = '✗ ' + res.status + (info ? ' · ' + info : '') + ' (raw: ' + JSON.stringify(j).slice(0,120) + ')';
     }
   } catch(e) {
     res_el.style.color = 'red';
