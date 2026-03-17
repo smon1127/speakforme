@@ -1360,12 +1360,12 @@ function selectHuskey() {
   if (huskey) { sel.value = huskey.value; onVoiceChange(); }
 }
 
-function switchToNative(errorMsg) {
+function switchToNative(errorCode) {
   const sel = document.getElementById('voiceSelect');
   const native = [...sel.options].find(o => o.value.startsWith('native:'));
   if (native) { sel.value = native.value; onVoiceChange(); }
   else { selectedELVoiceId = null; localStorage.removeItem(LS_VOICE_KEY); }
-  showToast(errorMsg);
+  showToast('EL ' + errorCode + ' → Gerätestimme');
 }
 
 if (elApiKey) {
@@ -1430,7 +1430,7 @@ async function speakEL(text, voiceId) {
     const keyPreview = elApiKey ? elApiKey.slice(0,4) + '…' + elApiKey.slice(-4) : '(empty)';
     console.error('EL TTS', res.status, code, msg, '| key:', keyPreview, '| voice:', voiceId);
     const label = code || res.status;
-    throw new Error('ElevenLabs ' + label + (msg ? ': ' + msg : ''));
+    throw new Error(label);
   }
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
