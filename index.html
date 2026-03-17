@@ -687,7 +687,7 @@ const TRANSLATIONS = {
     importCancel:'Abbrechen', importConfirm:'Importieren',
     shareTitle:'Link teilen', shareLinkLabel:'Link kopieren', shareClose:'Schließen', shareCopy:'Kopieren',
     elTitle:'ElevenLabs', elKeyLabel:'API-Schlüssel', elKeyPlaceholder:'sk_…', elHint:'Schlüssel wird nur lokal gespeichert. Leer lassen zum Trennen.', elCancel:'Abbrechen', elConnect:'Verbinden',
-    editTitle:'Schaltfläche bearbeiten', editLabelField:'Beschriftung', editLabelPh:'Kurztext auf dem Button', editPhraseField:'Gesprochener Text', editPhrasePh:'Was vorgelesen wird', editColorField:'Farbe', editCancel:'Abbrechen', editSave:'Speichern',
+    editTitle:'Schaltfläche bearbeiten', editLabelField:'Beschriftung', editLabelPh:'Kurztext auf dem Button', editPhraseField:'Aussprache', editPhrasePh:'Was vorgelesen wird', editColorField:'Farbe', editCancel:'Abbrechen', editSave:'Speichern',
   },
   en: {
     scrollUp:'Scroll up', scrollDown:'Scroll down',
@@ -879,7 +879,7 @@ function updateUIStrings() {
   if (phrLabel) phrLabel.textContent = t('editPhraseField');
   const phrInp = document.getElementById('modal-phrase');
   if (phrInp) phrInp.placeholder = t('editPhrasePh');
-  const colorLabel = document.querySelector('#editModal .modal-field:nth-child(3) label');
+  const colorLabel = document.querySelector('#editModal .modal-field:nth-child(4) label');
   if (colorLabel) colorLabel.textContent = t('editColorField');
   const editBtns = document.querySelectorAll('#editModal .modal-actions button');
   if (editBtns[0]) editBtns[0].textContent = t('editCancel');
