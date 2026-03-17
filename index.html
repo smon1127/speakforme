@@ -466,7 +466,7 @@
     <div class="modal-title" id="el-title">ElevenLabs</div>
     <div class="modal-field">
       <label for="el-key-input">API-Schlüssel</label>
-      <input id="el-key-input" type="text" placeholder="sk_…" autocomplete="new-password" spellcheck="false" />
+      <input id="el-key-input" type="text" placeholder="sk_…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
     </div>
     <p style="color:var(--muted);font-size:13px;margin:0 0 18px;line-height:1.5">Schlüssel wird nur lokal gespeichert. Leer lassen zum Trennen.</p>
     <div class="modal-actions">
@@ -1311,7 +1311,8 @@ async function saveELKey() {
   elVoices = [...EL_DEFAULT_VOICES]; // available immediately
   document.getElementById('elBtn').classList.add('active');
   populateVoices();
-  showToast(t('toastElConnected'));
+  const preview = val.length > 8 ? val.slice(0, 4) + '…' + val.slice(-4) : val;
+  showToast(t('toastElConnected') + ' · ' + preview);
   fetchELVoices(); // replace with user's actual voices in background
 }
 
