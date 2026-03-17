@@ -466,9 +466,9 @@
     <div class="modal-title" id="el-title">ElevenLabs</div>
     <div class="modal-field">
       <label for="el-key-input">API-Schlüssel</label>
-      <input id="el-key-input" type="text" placeholder="sk_…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
+      <input id="el-key-input" type="text" placeholder="pk_…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
     </div>
-    <p style="color:var(--muted);font-size:13px;margin:0 0 8px;line-height:1.5">Schlüssel wird nur lokal gespeichert. Leer lassen zum Trennen.</p>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 8px;line-height:1.5">Benötigt einen <strong>Public Key</strong> (beginnt mit <code>pk_</code>) — erstelle ihn unter elevenlabs.io → API Keys → Public. Wird nur lokal gespeichert.</p>
     <p id="el-test-result" style="font-size:13px;margin:0 0 18px;min-height:18px"></p>
     <div class="modal-actions">
       <button class="modal-btn-cancel" onclick="closeELModal()">Abbrechen</button>
@@ -1208,7 +1208,7 @@ function populateVoices() {
     elVoices.forEach(v => {
       const opt = document.createElement('option');
       opt.value = 'el:' + v.voice_id;
-      opt.textContent = v.name;
+      opt.textContent = v.name.length > 18 ? v.name.slice(0, 17) + '…' : v.name;
       grp.appendChild(opt);
     });
     sel.appendChild(grp);
