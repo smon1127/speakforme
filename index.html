@@ -343,7 +343,7 @@
 <!-- ═══ TOP BAR ═══ -->
 <header class="top-bar" role="banner">
   <button class="scroll-btn scroll-btn-up" onclick="scrollPage(-1)" aria-label="Eine Seite nach oben">
-    <span class="scroll-visual"><i class="fa-solid fa-chevron-up"></i> Nach oben</span>
+    <span class="scroll-visual"><i class="fa-solid fa-chevron-up"></i> <span id="scroll-up-text">Nach oben</span></span>
   </button>
   <div class="top-bar-inner">
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
@@ -375,10 +375,10 @@
       <div class="section-title" id="sec-buch">Buchstaben — einzelne Wörter tippen</div>
       <div class="letter-grid" id="letters" role="group" aria-label="Buchstaben"></div>
       <div class="letter-actions">
-        <button onclick="backspace()" aria-label="Letzten Buchstaben löschen">
+        <button id="letter-delete-btn" onclick="backspace()" aria-label="Letzten Buchstaben löschen">
           <i class="fa-solid fa-delete-left"></i> Löschen
         </button>
-        <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
+        <button id="letter-space-btn" onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
       </div>
     </section>
 
@@ -429,7 +429,7 @@
     </button>
   </div>
   <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten">
-    <span class="scroll-visual">Nach unten <i class="fa-solid fa-chevron-down"></i></span>
+    <span class="scroll-visual"><span id="scroll-down-text">Nach unten</span> <i class="fa-solid fa-chevron-down"></i></span>
   </button>
 </nav>
 
@@ -509,67 +509,307 @@
 
 <script>
 // ════════════════════════════════════════════
-//  DEFAULT CONFIG
+//  BUTTON SETS  (translations inline per language)
 // ════════════════════════════════════════════
-const DEFAULT_CONFIG = {
-  sections: [
-    {
-      id: 'schnell', title: 'Schnell — Wichtigstes zuerst', cols: 2, group: null,
-      buttons: [
-        { label: 'JA',        phrase: 'Ja',                        cls: 'btn-huge btn-yes' },
-        { label: 'NEIN',      phrase: 'Nein',                      cls: 'btn-huge btn-no'  },
-        { label: 'Schmerzen', phrase: 'Ich habe Schmerzen',        cls: 'btn-big btn-urg'  },
-        { label: 'Luft',      phrase: 'Ich bekomme schlecht Luft', cls: 'btn-big btn-urg'  },
-        { label: 'Durst',     phrase: 'Ich habe Durst',            cls: 'btn-big btn-blue' },
-        { label: 'Hilfe',     phrase: 'Bitte Hilfe',               cls: 'btn-big btn-no'   },
-      ]
-    },
-    {
-      id: 'beduerfnisse', title: 'Bedürfnisse', cols: 2, group: 'left',
-      buttons: [
-        { label: 'Durst',         phrase: 'Ich habe Durst',               cls: '' },
-        { label: 'Trockener Mund',phrase: 'Mein Mund ist trocken',        cls: '' },
-        { label: 'Kalt',          phrase: 'Mir ist kalt',                 cls: '' },
-        { label: 'Warm',          phrase: 'Mir ist warm',                 cls: '' },
-        { label: 'Anders lagern', phrase: 'Bitte anders lagern',          cls: '' },
-        { label: 'Decke',         phrase: 'Bitte Decke',                  cls: '' },
-        { label: 'Mundpflege',    phrase: 'Bitte Mundpflege',             cls: '' },
-        { label: 'Absaugen',      phrase: 'Bitte absaugen',               cls: '' },
-        { label: 'Pflege rufen',  phrase: 'Bitte Pflegepersonal rufen',   cls: 'btn-urg' },
-        { label: 'Arzt rufen',    phrase: 'Bitte Arzt rufen',             cls: 'btn-urg' },
-        { label: 'Schlafen',      phrase: 'Ich möchte schlafen',          cls: '' },
-        { label: 'Müde',          phrase: 'Ich bin müde',                 cls: '' },
-      ]
-    },
-    {
-      id: 'gefuehle', title: 'Gefühle & Zustand', cols: 2, group: 'right',
-      buttons: [
-        { label: 'Angst',        phrase: 'Ich habe Angst',              cls: 'btn-urg'  },
-        { label: 'Unwohl',       phrase: 'Mir ist unwohl',              cls: ''         },
-        { label: 'Übel',         phrase: 'Mir ist übel',               cls: ''         },
-        { label: 'Schwindelig',  phrase: 'Mir ist schwindelig',         cls: ''         },
-        { label: 'Verwirrt',     phrase: 'Ich bin verwirrt',            cls: ''         },
-        { label: 'Besser',       phrase: 'Es geht besser',              cls: 'btn-yes'  },
-        { label: 'Bleib bei mir',phrase: 'Bitte bleib bei mir',         cls: 'btn-blue' },
-        { label: 'Familie',      phrase: 'Ich möchte Familie sehen',    cls: 'btn-blue' },
-      ]
-    },
-    {
-      id: 'wo', title: 'Wo tut es weh?', cols: 3, group: null,
-      buttons: [
-        { label: 'Brust',  phrase: 'Schmerzen in der Brust', cls: '' },
-        { label: 'Hals',   phrase: 'Schmerzen im Hals',      cls: '' },
-        { label: 'Mund',   phrase: 'Schmerzen am Mund',      cls: '' },
-        { label: 'Bauch',  phrase: 'Schmerzen im Bauch',     cls: '' },
-        { label: 'Rücken', phrase: 'Schmerzen im Rücken',    cls: '' },
-        { label: 'Arm',    phrase: 'Schmerzen im Arm',       cls: '' },
-        { label: 'Hand',   phrase: 'Schmerzen in der Hand',  cls: '' },
-        { label: 'Bein',   phrase: 'Schmerzen im Bein',      cls: '' },
-        { label: 'Kopf',   phrase: 'Schmerzen am Kopf',      cls: '' },
-      ]
-    }
-  ]
+const BUTTON_SETS = [
+  {
+    id:'schnell', cols:2, group:null,
+    titles:{ de:'Schnell — Wichtigstes zuerst', en:'Quick — Most Important First', es:'Rápido — Lo más importante', zh:'快速 — 最重要的', ar:'سريع — الأهم أولاً', hi:'त्वरित — सबसे महत्वपूर्ण' },
+    buttons:[
+      { cls:'btn-huge btn-yes', labels:{ de:'JA',        en:'YES',    es:'SÍ',    zh:'是',   ar:'نعم', hi:'हाँ'  }, phrases:{ de:'Ja',                         en:'Yes',                       es:'Sí',                       zh:'是的',      ar:'نعم',                           hi:'हाँ'                              } },
+      { cls:'btn-huge btn-no',  labels:{ de:'NEIN',      en:'NO',     es:'NO',    zh:'不',   ar:'لا',  hi:'नहीं' }, phrases:{ de:'Nein',                       en:'No',                        es:'No',                       zh:'不',        ar:'لا',                            hi:'नहीं'                             } },
+      { cls:'btn-big btn-urg',  labels:{ de:'Schmerzen', en:'Pain',   es:'Dolor', zh:'疼痛', ar:'ألم', hi:'दर्द' }, phrases:{ de:'Ich habe Schmerzen',        en:'I am in pain',              es:'Tengo dolor',              zh:'我很痛',    ar:'أنا في ألم',                   hi:'मुझे दर्द है'                    } },
+      { cls:'btn-big btn-urg',  labels:{ de:'Luft',      en:'Breath', es:'Aire',  zh:'呼吸', ar:'هواء',hi:'सांस'}, phrases:{ de:'Ich bekomme schlecht Luft', en:"I can't breathe well",       es:'No puedo respirar bien',   zh:'我呼吸困难', ar:'أنا لا أستطيع التنفس جيداً', hi:'मुझे सांस लेने में तकलीफ है'   } },
+      { cls:'btn-big btn-blue', labels:{ de:'Durst',     en:'Thirsty',es:'Sed',   zh:'口渴', ar:'عطش', hi:'प्यास'}, phrases:{ de:'Ich habe Durst',            en:'I am thirsty',              es:'Tengo sed',                zh:'我口渴',    ar:'أنا عطشان',                    hi:'मुझे प्यास लगी है'              } },
+      { cls:'btn-big btn-no',   labels:{ de:'Hilfe',     en:'Help',   es:'Ayuda', zh:'救命', ar:'مساعدة',hi:'मदद'}, phrases:{ de:'Bitte Hilfe',              en:'Please help',               es:'Por favor ayuda',          zh:'请帮我',    ar:'من فضلك ساعدني',               hi:'कृपया मदद करें'                  } },
+    ]
+  },
+  {
+    id:'beduerfnisse', cols:2, group:'left',
+    titles:{ de:'Bedürfnisse', en:'Needs', es:'Necesidades', zh:'需求', ar:'الاحتياجات', hi:'ज़रूरतें' },
+    buttons:[
+      { cls:'',        labels:{ de:'Durst',         en:'Thirsty',     es:'Sed',           zh:'口渴',   ar:'عطش',        hi:'प्यास'        }, phrases:{ de:'Ich habe Durst',              en:'I am thirsty',           es:'Tengo sed',                      zh:'我口渴',     ar:'أنا عطشان',                hi:'मुझे प्यास लगी है'      } },
+      { cls:'',        labels:{ de:'Trockener Mund', en:'Dry mouth',    es:'Boca seca',     zh:'口干',   ar:'جفاف الفم',  hi:'मुँह सूखा'   }, phrases:{ de:'Mein Mund ist trocken',       en:'My mouth is dry',        es:'Mi boca está seca',              zh:'我的嘴很干', ar:'فمي جاف',                  hi:'मेरा मुँह सूखा है'     } },
+      { cls:'',        labels:{ de:'Kalt',          en:'Cold',        es:'Frío',          zh:'冷',    ar:'بارد',       hi:'ठंड'          }, phrases:{ de:'Mir ist kalt',                en:'I am cold',              es:'Tengo frío',                     zh:'我很冷',     ar:'أنا بارد',                 hi:'मुझे ठंड लग रही है'    } },
+      { cls:'',        labels:{ de:'Warm',          en:'Warm',        es:'Calor',         zh:'热',    ar:'دافئ',       hi:'गर्मी'        }, phrases:{ de:'Mir ist warm',                en:'I am warm',              es:'Tengo calor',                    zh:'我很热',     ar:'أنا دافئ',                 hi:'मुझे गर्मी लग रही है'  } },
+      { cls:'',        labels:{ de:'Anders lagern', en:'Reposition',  es:'Reposicionar',  zh:'换位',  ar:'إعادة وضع',  hi:'स्थिति बदलें'}, phrases:{ de:'Bitte anders lagern',         en:'Please reposition me',   es:'Por favor reposicióneme',        zh:'请帮我换个位置',ar:'من فضلك عدّل وضعي',       hi:'कृपया मुझे हिलाएं'      } },
+      { cls:'',        labels:{ de:'Decke',         en:'Blanket',     es:'Manta',         zh:'毯子',  ar:'بطانية',     hi:'कंबल'         }, phrases:{ de:'Bitte Decke',                 en:'Please bring a blanket', es:'Por favor una manta',            zh:'请给我毯子', ar:'من فضلك أحضر بطانية',      hi:'कृपया कंबल लाएं'       } },
+      { cls:'',        labels:{ de:'Mundpflege',    en:'Mouth care',  es:'Cuidado bucal', zh:'口腔护理',ar:'عناية الفم', hi:'मुँह देखभाल' }, phrases:{ de:'Bitte Mundpflege',            en:'Please do mouth care',   es:'Por favor cuidado bucal',        zh:'请做口腔护理',ar:'من فضلك عناية الفم',       hi:'मुँह की देखभाल करें'   } },
+      { cls:'',        labels:{ de:'Absaugen',      en:'Suction',     es:'Succión',       zh:'吸痰',  ar:'شفط',        hi:'सक्शन'        }, phrases:{ de:'Bitte absaugen',              en:'Please suction',         es:'Por favor succión',              zh:'请抽痰',     ar:'من فضلك الشفط',            hi:'कृपया सक्शन करें'      } },
+      { cls:'btn-urg', labels:{ de:'Pflege rufen',  en:'Call nurse',  es:'Llamar enfermera',zh:'呼叫护士',ar:'استدعاء ممرضة',hi:'नर्स बुलाएं'}, phrases:{ de:'Bitte Pflegepersonal rufen', en:'Please call the nurse',  es:'Por favor llamen a la enfermera',zh:'请叫护士',   ar:'من فضلك استدعوا الممرضة',  hi:'कृपया नर्स को बुलाएं'  } },
+      { cls:'btn-urg', labels:{ de:'Arzt rufen',    en:'Call doctor', es:'Llamar médico', zh:'呼叫医生',ar:'استدعاء طبيب',hi:'डॉक्टर बुलाएं'}, phrases:{ de:'Bitte Arzt rufen',          en:'Please call the doctor', es:'Por favor llamen al médico',     zh:'请叫医生',   ar:'من فضلك استدعوا الطبيب',  hi:'कृपया डॉक्टर को बुलाएं'} },
+      { cls:'',        labels:{ de:'Schlafen',      en:'Sleep',       es:'Dormir',        zh:'睡觉',  ar:'النوم',      hi:'सोना'         }, phrases:{ de:'Ich möchte schlafen',        en:'I want to sleep',        es:'Quiero dormir',                  zh:'我想睡觉',   ar:'أريد النوم',               hi:'मुझे सोना है'          } },
+      { cls:'',        labels:{ de:'Müde',          en:'Tired',       es:'Cansado',       zh:'疲惫',  ar:'متعب',       hi:'थकान'         }, phrases:{ de:'Ich bin müde',               en:'I am tired',             es:'Estoy cansado',                  zh:'我很累',     ar:'أنا متعب',                 hi:'मैं थका हुआ हूँ'       } },
+    ]
+  },
+  {
+    id:'gefuehle', cols:2, group:'right',
+    titles:{ de:'Gefühle & Zustand', en:'Feelings & Condition', es:'Sentimientos y estado', zh:'感受与状态', ar:'المشاعر والحالة', hi:'भावनाएं और स्थिति' },
+    buttons:[
+      { cls:'btn-urg',  labels:{ de:'Angst',       en:'Anxious',      es:'Ansioso',    zh:'焦虑',   ar:'قلق',       hi:'डर'       }, phrases:{ de:'Ich habe Angst',       en:'I am anxious',         es:'Estoy ansioso',            zh:'我感到焦虑',  ar:'أنا قلق',           hi:'मुझे डर लग रहा है'              } },
+      { cls:'',         labels:{ de:'Unwohl',      en:'Unwell',       es:'Mal',        zh:'不舒服', ar:'غير مرتاح', hi:'बेचैनी'   }, phrases:{ de:'Mir ist unwohl',       en:'I feel unwell',        es:'Me siento mal',            zh:'我感到不舒服',ar:'أنا لست بخير',      hi:'मुझे अच्छा नहीं लग रहा'         } },
+      { cls:'',         labels:{ de:'Übel',        en:'Nauseous',     es:'Náuseas',    zh:'恶心',   ar:'غثيان',     hi:'मतली'     }, phrases:{ de:'Mir ist übel',         en:'I feel nauseous',      es:'Tengo náuseas',            zh:'我感到恶心',  ar:'أشعر بالغثيان',    hi:'मुझे मतली हो रही है'             } },
+      { cls:'',         labels:{ de:'Schwindelig', en:'Dizzy',        es:'Mareado',    zh:'头晕',   ar:'دوار',      hi:'चक्कर'    }, phrases:{ de:'Mir ist schwindelig',  en:'I feel dizzy',         es:'Estoy mareado',            zh:'我头晕',     ar:'أشعر بالدوار',     hi:'मुझे चक्कर आ रहा है'             } },
+      { cls:'',         labels:{ de:'Verwirrt',    en:'Confused',     es:'Confundido', zh:'困惑',   ar:'مرتبك',     hi:'भ्रम'     }, phrases:{ de:'Ich bin verwirrt',     en:'I am confused',        es:'Estoy confundido',         zh:'我很困惑',   ar:'أنا مرتبك',        hi:'मैं भ्रमित हूँ'                  } },
+      { cls:'btn-yes',  labels:{ de:'Besser',      en:'Better',       es:'Mejor',      zh:'好多了', ar:'أفضل',      hi:'बेहतर'    }, phrases:{ de:'Es geht besser',       en:'I feel better',        es:'Me siento mejor',          zh:'我感觉好多了',ar:'أشعر بتحسن',       hi:'मैं बेहतर महसूस कर रहा हूँ'     } },
+      { cls:'btn-blue', labels:{ de:'Bleib bei mir',en:'Stay with me',es:'Quédate',   zh:'陪着我', ar:'ابق معي',   hi:'साथ रहें' }, phrases:{ de:'Bitte bleib bei mir',  en:'Please stay with me',  es:'Por favor quédate conmigo',zh:'请陪着我',   ar:'من فضلك ابق معي',  hi:'कृपया मेरे साथ रहें'             } },
+      { cls:'btn-blue', labels:{ de:'Familie',     en:'Family',       es:'Familia',    zh:'家人',   ar:'الأسرة',    hi:'परिवार'   }, phrases:{ de:'Ich möchte Familie sehen',en:'I want to see my family',es:'Quiero ver a mi familia',zh:'我想见家人', ar:'أريد رؤية عائلتي', hi:'मैं अपने परिवार से मिलना चाहता हूँ'} },
+    ]
+  },
+  {
+    id:'wo', cols:3, group:null,
+    titles:{ de:'Wo tut es weh?', en:'Where does it hurt?', es:'¿Dónde duele?', zh:'哪里痛?', ar:'أين يؤلم؟', hi:'दर्द कहाँ है?' },
+    buttons:[
+      { cls:'', labels:{ de:'Brust',  en:'Chest',  es:'Pecho',    zh:'胸部', ar:'الصدر', hi:'सीना' }, phrases:{ de:'Schmerzen in der Brust', en:'Pain in my chest',  es:'Dolor en el pecho',    zh:'胸部疼痛', ar:'ألم في الصدر', hi:'सीने में दर्द'  } },
+      { cls:'', labels:{ de:'Hals',   en:'Throat', es:'Garganta', zh:'喉咙', ar:'الحلق',  hi:'गला'  }, phrases:{ de:'Schmerzen im Hals',    en:'Pain in my throat', es:'Dolor en la garganta', zh:'喉咙疼痛', ar:'ألم في الحلق',  hi:'गले में दर्द'   } },
+      { cls:'', labels:{ de:'Mund',   en:'Mouth',  es:'Boca',     zh:'嘴',  ar:'الفم',   hi:'मुँह' }, phrases:{ de:'Schmerzen am Mund',    en:'Pain in my mouth',  es:'Dolor en la boca',     zh:'口部疼痛', ar:'ألم في الفم',   hi:'मुँह में दर्द'  } },
+      { cls:'', labels:{ de:'Bauch',  en:'Belly',  es:'Barriga',  zh:'腹部', ar:'البطن',  hi:'पेट'  }, phrases:{ de:'Schmerzen im Bauch',   en:'Pain in my belly',  es:'Dolor en la barriga',  zh:'腹部疼痛', ar:'ألم في البطن',  hi:'पेट में दर्द'   } },
+      { cls:'', labels:{ de:'Rücken', en:'Back',   es:'Espalda',  zh:'背部', ar:'الظهر',  hi:'पीठ'  }, phrases:{ de:'Schmerzen im Rücken',  en:'Pain in my back',   es:'Dolor en la espalda',  zh:'背部疼痛', ar:'ألم في الظهر',  hi:'पीठ में दर्द'   } },
+      { cls:'', labels:{ de:'Arm',    en:'Arm',    es:'Brazo',    zh:'手臂', ar:'الذراع', hi:'बाँह' }, phrases:{ de:'Schmerzen im Arm',     en:'Pain in my arm',    es:'Dolor en el brazo',    zh:'手臂疼痛', ar:'ألم في الذراع', hi:'बाँह में दर्द'  } },
+      { cls:'', labels:{ de:'Hand',   en:'Hand',   es:'Mano',     zh:'手',  ar:'اليد',   hi:'हाथ'  }, phrases:{ de:'Schmerzen in der Hand',en:'Pain in my hand',   es:'Dolor en la mano',     zh:'手部疼痛', ar:'ألم في اليد',   hi:'हाथ में दर्द'   } },
+      { cls:'', labels:{ de:'Bein',   en:'Leg',    es:'Pierna',   zh:'腿',  ar:'الساق',  hi:'पैर'  }, phrases:{ de:'Schmerzen im Bein',    en:'Pain in my leg',    es:'Dolor en la pierna',   zh:'腿部疼痛', ar:'ألم في الساق',  hi:'पैर में दर्द'   } },
+      { cls:'', labels:{ de:'Kopf',   en:'Head',   es:'Cabeza',   zh:'头',  ar:'الرأس',  hi:'सिर'  }, phrases:{ de:'Schmerzen am Kopf',    en:'Pain in my head',   es:'Dolor en la cabeza',   zh:'头部疼痛', ar:'ألم في الرأس',  hi:'सिर में दर्द'   } },
+    ]
+  },
+];
+
+function getDefaultConfig(lang) {
+  const l = lang || 'de';
+  return {
+    sections: BUTTON_SETS.map(sec => ({
+      id:      sec.id,
+      title:   sec.titles[l] || sec.titles.de,
+      cols:    sec.cols,
+      group:   sec.group,
+      buttons: sec.buttons.map(b => ({
+        label:  b.labels[l]  || b.labels.de,
+        phrase: b.phrases[l] || b.phrases.de,
+        cls:    b.cls,
+      }))
+    }))
+  };
+}
+
+// ════════════════════════════════════════════
+//  TRANSLATIONS
+// ════════════════════════════════════════════
+const TRANSLATIONS = {
+  de: {
+    scrollUp:'Nach oben', scrollDown:'Nach unten',
+    phraseLabel:'Aktuelle Auswahl', phrasePlaceholder:'Antippen zum Buchstabieren …',
+    muteOn:'Ton: an', muteOff:'Ton: aus', autoOn:'Auto-Vorlesen: an', autoOff:'Auto-Vorlesen: aus',
+    btnSpeak:'Vorlesen', btnShare:'Einstellungen teilen', btnCancel:'Abbrechen', btnApply:'Übernehmen',
+    secPain:'Schmerzskala — 0 (kein) bis 10 (maximal)', secLetters:'Buchstaben — einzelne Wörter tippen', secVoice:'Stimme & Sprache',
+    letterDelete:'Löschen', letterSpace:'Leerzeichen', letterDeleteAria:'Letzten Buchstaben löschen', letterSpaceAria:'Leerzeichen einfügen',
+    footerLine1:'Offline-Webseite für das iPhone', footerLine2:'Safari: Teilen → Zum Home-Bildschirm',
+    footerEdit:'✎ Bearbeiten', footerHint:'Buttons antippen zum Ändern · × zum Löschen · + für neuen Button',
+    painAriaLabel:'Schmerzskala 0 bis 10', painBtnAria:'Schmerz {n} von 10', painPhrase:'Mein Schmerz ist {n} von 10',
+    addBtnAria:'Button hinzufügen', deleteBadgeAria:'Löschen', deviceVoicesGroup:'Gerätestimmen',
+    toastElError:'ElevenLabs Fehler', toastElBadKey:'ElevenLabs: Ungültiger API-Schlüssel',
+    toastElErrCode:'ElevenLabs Fehler ({code})', toastElDisconnected:'ElevenLabs getrennt', toastElConnected:'ElevenLabs verbunden',
+    toastLinkCopied:'Link kopiert', toastShareError:'Fehler beim Teilen', toastImportOk:'Konfiguration importiert', toastImportBad:'Ungültiger Konfigurations-Link',
+    importTitle:'Konfiguration importieren?', importBody:'Dieser Link enthält eine Tastenbelegung. Soll die aktuelle Konfiguration ersetzt werden?',
+    importCancel:'Abbrechen', importConfirm:'Importieren',
+    shareTitle:'Link teilen', shareLinkLabel:'Link kopieren', shareClose:'Schließen', shareCopy:'Kopieren',
+    elTitle:'ElevenLabs', elKeyLabel:'API-Schlüssel', elKeyPlaceholder:'sk_…', elHint:'Schlüssel wird nur lokal gespeichert. Leer lassen zum Trennen.', elCancel:'Abbrechen', elConnect:'Verbinden',
+    editTitle:'Schaltfläche bearbeiten', editLabelField:'Beschriftung', editLabelPh:'Kurztext auf dem Button', editPhraseField:'Gesprochener Text', editPhrasePh:'Was vorgelesen wird', editColorField:'Farbe', editCancel:'Abbrechen', editSave:'Speichern',
+  },
+  en: {
+    scrollUp:'Scroll up', scrollDown:'Scroll down',
+    phraseLabel:'Current Selection', phrasePlaceholder:'Tap to spell …',
+    muteOn:'Sound: on', muteOff:'Sound: off', autoOn:'Auto-speak: on', autoOff:'Auto-speak: off',
+    btnSpeak:'Speak', btnShare:'Share settings', btnCancel:'Cancel', btnApply:'Apply',
+    secPain:'Pain scale — 0 (none) to 10 (maximum)', secLetters:'Letters — type individual words', secVoice:'Voice & Language',
+    letterDelete:'Delete', letterSpace:'Space', letterDeleteAria:'Delete last letter', letterSpaceAria:'Insert space',
+    footerLine1:'Offline page for iPhone', footerLine2:'Safari: Share → Add to Home Screen',
+    footerEdit:'✎ Edit', footerHint:'Tap buttons to change · × to delete · + for new',
+    painAriaLabel:'Pain scale 0 to 10', painBtnAria:'Pain {n} of 10', painPhrase:'My pain is {n} out of 10',
+    addBtnAria:'Add button', deleteBadgeAria:'Delete', deviceVoicesGroup:'Device voices',
+    toastElError:'ElevenLabs error', toastElBadKey:'ElevenLabs: Invalid API key',
+    toastElErrCode:'ElevenLabs error ({code})', toastElDisconnected:'ElevenLabs disconnected', toastElConnected:'ElevenLabs connected',
+    toastLinkCopied:'Link copied', toastShareError:'Error sharing', toastImportOk:'Configuration imported', toastImportBad:'Invalid configuration link',
+    importTitle:'Import configuration?', importBody:'This link contains a button layout. Replace the current configuration?',
+    importCancel:'Cancel', importConfirm:'Import',
+    shareTitle:'Share link', shareLinkLabel:'Copy link', shareClose:'Close', shareCopy:'Copy',
+    elTitle:'ElevenLabs', elKeyLabel:'API Key', elKeyPlaceholder:'sk_…', elHint:'Key is stored locally only. Leave empty to disconnect.', elCancel:'Cancel', elConnect:'Connect',
+    editTitle:'Edit button', editLabelField:'Label', editLabelPh:'Short text on button', editPhraseField:'Spoken text', editPhrasePh:'What will be read aloud', editColorField:'Color', editCancel:'Cancel', editSave:'Save',
+  },
+  es: {
+    scrollUp:'Arriba', scrollDown:'Abajo',
+    phraseLabel:'Selección actual', phrasePlaceholder:'Toca para deletrear …',
+    muteOn:'Sonido: activo', muteOff:'Sonido: apagado', autoOn:'Auto-hablar: activo', autoOff:'Auto-hablar: apagado',
+    btnSpeak:'Hablar', btnShare:'Compartir ajustes', btnCancel:'Cancelar', btnApply:'Aplicar',
+    secPain:'Escala de dolor — 0 (ninguno) a 10 (máximo)', secLetters:'Letras — escribir palabras individuales', secVoice:'Voz e idioma',
+    letterDelete:'Borrar', letterSpace:'Espacio', letterDeleteAria:'Borrar última letra', letterSpaceAria:'Insertar espacio',
+    footerLine1:'Página sin conexión para iPhone', footerLine2:'Safari: Compartir → Añadir a inicio',
+    footerEdit:'✎ Editar', footerHint:'Toca botones para cambiar · × eliminar · + nuevo',
+    painAriaLabel:'Escala de dolor 0 a 10', painBtnAria:'Dolor {n} de 10', painPhrase:'Mi dolor es {n} de 10',
+    addBtnAria:'Añadir botón', deleteBadgeAria:'Eliminar', deviceVoicesGroup:'Voces del dispositivo',
+    toastElError:'Error de ElevenLabs', toastElBadKey:'ElevenLabs: Clave API no válida',
+    toastElErrCode:'Error ElevenLabs ({code})', toastElDisconnected:'ElevenLabs desconectado', toastElConnected:'ElevenLabs conectado',
+    toastLinkCopied:'Enlace copiado', toastShareError:'Error al compartir', toastImportOk:'Configuración importada', toastImportBad:'Enlace de configuración no válido',
+    importTitle:'¿Importar configuración?', importBody:'Este enlace contiene botones. ¿Reemplazar la configuración actual?',
+    importCancel:'Cancelar', importConfirm:'Importar',
+    shareTitle:'Compartir enlace', shareLinkLabel:'Copiar enlace', shareClose:'Cerrar', shareCopy:'Copiar',
+    elTitle:'ElevenLabs', elKeyLabel:'Clave API', elKeyPlaceholder:'sk_…', elHint:'La clave se almacena localmente. Dejar vacío para desconectar.', elCancel:'Cancelar', elConnect:'Conectar',
+    editTitle:'Editar botón', editLabelField:'Etiqueta', editLabelPh:'Texto corto en el botón', editPhraseField:'Texto hablado', editPhrasePh:'Lo que se leerá en voz alta', editColorField:'Color', editCancel:'Cancelar', editSave:'Guardar',
+  },
+  zh: {
+    scrollUp:'向上', scrollDown:'向下',
+    phraseLabel:'当前选择', phrasePlaceholder:'点击拼写 …',
+    muteOn:'声音：开', muteOff:'声音：关', autoOn:'自动朗读：开', autoOff:'自动朗读：关',
+    btnSpeak:'朗读', btnShare:'分享设置', btnCancel:'取消', btnApply:'应用',
+    secPain:'疼痛量表 — 0（无）到10（最大）', secLetters:'字母 — 逐字拼写', secVoice:'语音与语言',
+    letterDelete:'删除', letterSpace:'空格', letterDeleteAria:'删除最后一个字母', letterSpaceAria:'插入空格',
+    footerLine1:'iPhone离线页面', footerLine2:'Safari：分享 → 添加到主屏幕',
+    footerEdit:'✎ 编辑', footerHint:'点击按钮修改 · × 删除 · + 新按钮',
+    painAriaLabel:'疼痛量表0到10', painBtnAria:'疼痛 {n}/10', painPhrase:'我的疼痛是{n}分（满分10分）',
+    addBtnAria:'添加按钮', deleteBadgeAria:'删除', deviceVoicesGroup:'设备语音',
+    toastElError:'ElevenLabs错误', toastElBadKey:'ElevenLabs：无效API密钥',
+    toastElErrCode:'ElevenLabs错误（{code}）', toastElDisconnected:'ElevenLabs已断开', toastElConnected:'ElevenLabs已连接',
+    toastLinkCopied:'链接已复制', toastShareError:'分享错误', toastImportOk:'配置已导入', toastImportBad:'无效配置链接',
+    importTitle:'导入配置？', importBody:'此链接包含按钮布局。替换当前配置？',
+    importCancel:'取消', importConfirm:'导入',
+    shareTitle:'分享链接', shareLinkLabel:'复制链接', shareClose:'关闭', shareCopy:'复制',
+    elTitle:'ElevenLabs', elKeyLabel:'API密钥', elKeyPlaceholder:'sk_…', elHint:'密钥仅本地存储。留空以断开。', elCancel:'取消', elConnect:'连接',
+    editTitle:'编辑按钮', editLabelField:'标签', editLabelPh:'按钮上的短文字', editPhraseField:'朗读文本', editPhrasePh:'将被朗读的内容', editColorField:'颜色', editCancel:'取消', editSave:'保存',
+  },
+  ar: {
+    scrollUp:'للأعلى', scrollDown:'للأسفل',
+    phraseLabel:'الاختيار الحالي', phrasePlaceholder:'انقر للتهجئة …',
+    muteOn:'الصوت: تشغيل', muteOff:'الصوت: إيقاف', autoOn:'نطق تلقائي: تشغيل', autoOff:'نطق تلقائي: إيقاف',
+    btnSpeak:'تحدث', btnShare:'مشاركة الإعدادات', btnCancel:'إلغاء', btnApply:'تطبيق',
+    secPain:'مقياس الألم — 0 (لا يوجد) إلى 10 (أقصى)', secLetters:'الحروف — تهجئة كلمات', secVoice:'الصوت واللغة',
+    letterDelete:'حذف', letterSpace:'مسافة', letterDeleteAria:'حذف الحرف الأخير', letterSpaceAria:'إدراج مسافة',
+    footerLine1:'صفحة غير متصلة للآيفون', footerLine2:'سفاري: مشاركة → إضافة للشاشة الرئيسية',
+    footerEdit:'✎ تعديل', footerHint:'انقر للتعديل · × للحذف · + جديد',
+    painAriaLabel:'مقياس الألم 0 إلى 10', painBtnAria:'ألم {n} من 10', painPhrase:'ألمي {n} من 10',
+    addBtnAria:'إضافة زر', deleteBadgeAria:'حذف', deviceVoicesGroup:'أصوات الجهاز',
+    toastElError:'خطأ ElevenLabs', toastElBadKey:'ElevenLabs: مفتاح API غير صالح',
+    toastElErrCode:'خطأ ElevenLabs ({code})', toastElDisconnected:'تم قطع ElevenLabs', toastElConnected:'تم الاتصال بـ ElevenLabs',
+    toastLinkCopied:'تم نسخ الرابط', toastShareError:'خطأ في المشاركة', toastImportOk:'تم استيراد التكوين', toastImportBad:'رابط تكوين غير صالح',
+    importTitle:'استيراد التكوين؟', importBody:'يحتوي هذا الرابط على تخطيط. هل تريد الاستبدال؟',
+    importCancel:'إلغاء', importConfirm:'استيراد',
+    shareTitle:'مشاركة الرابط', shareLinkLabel:'نسخ الرابط', shareClose:'إغلاق', shareCopy:'نسخ',
+    elTitle:'ElevenLabs', elKeyLabel:'مفتاح API', elKeyPlaceholder:'sk_…', elHint:'يتم التخزين محليًا فقط. اتركه فارغًا للفصل.', elCancel:'إلغاء', elConnect:'اتصال',
+    editTitle:'تعديل الزر', editLabelField:'التسمية', editLabelPh:'نص قصير على الزر', editPhraseField:'النص المنطوق', editPhrasePh:'ما سيُقرأ بصوت عالٍ', editColorField:'اللون', editCancel:'إلغاء', editSave:'حفظ',
+  },
+  hi: {
+    scrollUp:'ऊपर', scrollDown:'नीचे',
+    phraseLabel:'वर्तमान चयन', phrasePlaceholder:'टाइप करने के लिए टैप करें …',
+    muteOn:'ध्वनि: चालू', muteOff:'ध्वनि: बंद', autoOn:'स्वतः बोलें: चालू', autoOff:'स्वतः बोलें: बंद',
+    btnSpeak:'बोलें', btnShare:'सेटिंग्स साझा करें', btnCancel:'रद्द करें', btnApply:'लागू करें',
+    secPain:'दर्द का पैमाना — 0 (कोई नहीं) से 10 (अधिकतम)', secLetters:'अक्षर — शब्द टाइप करें', secVoice:'आवाज़ और भाषा',
+    letterDelete:'हटाएं', letterSpace:'स्पेस', letterDeleteAria:'अंतिम अक्षर हटाएं', letterSpaceAria:'स्पेस डालें',
+    footerLine1:'iPhone के लिए ऑफलाइन पेज', footerLine2:'Safari: शेयर → होम स्क्रीन में जोड़ें',
+    footerEdit:'✎ संपादित करें', footerHint:'बटन टैप करें · × हटाएं · + नया',
+    painAriaLabel:'दर्द का पैमाना 0 से 10', painBtnAria:'दर्द {n}/10', painPhrase:'मेरा दर्द {n}/10 है',
+    addBtnAria:'बटन जोड़ें', deleteBadgeAria:'हटाएं', deviceVoicesGroup:'डिवाइस आवाज़ें',
+    toastElError:'ElevenLabs त्रुटि', toastElBadKey:'ElevenLabs: अमान्य API कुंजी',
+    toastElErrCode:'ElevenLabs त्रुटि ({code})', toastElDisconnected:'ElevenLabs डिस्कनेक्ट', toastElConnected:'ElevenLabs कनेक्ट',
+    toastLinkCopied:'लिंक कॉपी किया', toastShareError:'शेयर करने में त्रुटि', toastImportOk:'कॉन्फ़िगरेशन आयात किया', toastImportBad:'अमान्य कॉन्फ़िग लिंक',
+    importTitle:'कॉन्फ़िगरेशन आयात करें?', importBody:'इस लिंक में बटन लेआउट है। वर्तमान कॉन्फ़िगरेशन बदलें?',
+    importCancel:'रद्द करें', importConfirm:'आयात करें',
+    shareTitle:'लिंक साझा करें', shareLinkLabel:'लिंक कॉपी करें', shareClose:'बंद करें', shareCopy:'कॉपी करें',
+    elTitle:'ElevenLabs', elKeyLabel:'API कुंजी', elKeyPlaceholder:'sk_…', elHint:'कुंजी केवल स्थानीय रूप से संग्रहीत है।', elCancel:'रद्द करें', elConnect:'कनेक्ट करें',
+    editTitle:'बटन संपादित करें', editLabelField:'लेबल', editLabelPh:'बटन पर छोटा पाठ', editPhraseField:'बोला गया पाठ', editPhrasePh:'जो जोर से पढ़ा जाएगा', editColorField:'रंग', editCancel:'रद्द करें', editSave:'सहेजें',
+  },
 };
+
+function t(key, vars) {
+  const s = TRANSLATIONS[currentLang] || TRANSLATIONS.de;
+  let v = s[key] ?? (TRANSLATIONS.de[key] ?? key);
+  if (vars) Object.keys(vars).forEach(k => { v = String(v).replace('{' + k + '}', vars[k]); });
+  return v;
+}
+
+const COUNTRY_TO_LANG = {
+  DE:'de',AT:'de',CH:'de',LI:'de',LU:'de',
+  GB:'en',US:'en',AU:'en',CA:'en',NZ:'en',IE:'en',ZA:'en',IN:'hi',
+  ES:'es',MX:'es',AR:'es',CO:'es',CL:'es',PE:'es',VE:'es',EC:'es',GT:'es',CU:'es',BO:'es',DO:'es',HN:'es',PY:'es',SV:'es',NI:'es',CR:'es',PA:'es',UY:'es',
+  CN:'zh',TW:'zh',HK:'zh',MO:'zh',SG:'zh',
+  SA:'ar',AE:'ar',EG:'ar',IQ:'ar',SY:'ar',JO:'ar',LB:'ar',KW:'ar',OM:'ar',YE:'ar',LY:'ar',TN:'ar',DZ:'ar',MA:'ar',QA:'ar',BH:'ar',SD:'ar',
+};
+function countryToLang(cc) { return COUNTRY_TO_LANG[(cc||'').toUpperCase()] || null; }
+
+function updateUIStrings() {
+  const upText   = document.getElementById('scroll-up-text');
+  const downText = document.getElementById('scroll-down-text');
+  if (upText)   upText.textContent   = t('scrollUp');
+  if (downText) downText.textContent = t('scrollDown');
+  const phraseLabel = document.querySelector('.phrase-label');
+  if (phraseLabel) phraseLabel.textContent = t('phraseLabel');
+  if (phraseEl && phraseEl.classList.contains('placeholder')) phraseEl.textContent = t('phrasePlaceholder');
+  const muteBtn = document.getElementById('muteBtn');
+  if (muteBtn) muteBtn.textContent = muted ? t('muteOff') : t('muteOn');
+  const autoBtn = document.getElementById('autoBtn');
+  if (autoBtn) autoBtn.textContent = autoSpeak ? t('autoOn') : t('autoOff');
+  const speakBtn = document.getElementById('btn-speak');
+  if (speakBtn && !editMode) {
+    speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ' + t('btnSpeak');
+    speakBtn.setAttribute('aria-label', t('btnSpeak'));
+  }
+  const cancelCtrl = document.querySelector('#edit-controls .btn-cancel');
+  if (cancelCtrl) cancelCtrl.innerHTML = '<i class="fa-solid fa-xmark"></i> ' + t('btnCancel');
+  const applyCtrl  = document.querySelector('#edit-controls .btn-apply');
+  if (applyCtrl)  applyCtrl.innerHTML  = '<i class="fa-solid fa-check"></i> ' + t('btnApply');
+  const secPain    = document.getElementById('sec-pain');
+  const secLetters = document.getElementById('sec-buch');
+  const secVoice   = document.getElementById('sec-settings');
+  if (secPain)    secPain.textContent    = t('secPain');
+  if (secLetters) secLetters.textContent = t('secLetters');
+  if (secVoice)   secVoice.textContent   = t('secVoice');
+  const delBtn   = document.getElementById('letter-delete-btn');
+  const spaceBtn = document.getElementById('letter-space-btn');
+  if (delBtn)   { delBtn.innerHTML  = '<i class="fa-solid fa-delete-left"></i> ' + t('letterDelete'); delBtn.setAttribute('aria-label', t('letterDeleteAria')); }
+  if (spaceBtn) { spaceBtn.textContent = t('letterSpace'); spaceBtn.setAttribute('aria-label', t('letterSpaceAria')); }
+  const footer = document.querySelector('.footer');
+  if (footer) footer.innerHTML =
+    t('footerLine1') + '<br>' + t('footerLine2') + '<br><br>' +
+    '<a href="#" onclick="event.preventDefault();enterEditMode()" style="color:#0284c7;text-decoration:underline;font-size:14px;font-weight:600">' + t('footerEdit') + '</a><br>' +
+    '<span style="font-size:12px;color:var(--muted)">' + t('footerHint') + '</span>';
+  const importTitleEl = document.getElementById('import-title');
+  if (importTitleEl) importTitleEl.textContent = t('importTitle');
+  const importBody = document.querySelector('#importModal p');
+  if (importBody) importBody.textContent = t('importBody');
+  const importBtns = document.querySelectorAll('#importModal .modal-actions button');
+  if (importBtns[0]) importBtns[0].textContent = t('importCancel');
+  if (importBtns[1]) importBtns[1].textContent = t('importConfirm');
+  const shareTitleEl = document.getElementById('share-title');
+  if (shareTitleEl) shareTitleEl.textContent = t('shareTitle');
+  const shareLabelEl = document.querySelector('#shareModal .modal-field label');
+  if (shareLabelEl) shareLabelEl.textContent = t('shareLinkLabel');
+  const shareBtns = document.querySelectorAll('#shareModal .modal-actions button');
+  if (shareBtns[0]) shareBtns[0].textContent = t('shareClose');
+  if (shareBtns[1]) shareBtns[1].textContent = t('shareCopy');
+  const elTitleEl  = document.getElementById('el-title');
+  if (elTitleEl) elTitleEl.textContent = t('elTitle');
+  const elKeyLabel = document.querySelector('label[for="el-key-input"]');
+  if (elKeyLabel) elKeyLabel.textContent = t('elKeyLabel');
+  const elKeyInp = document.getElementById('el-key-input');
+  if (elKeyInp) elKeyInp.placeholder = t('elKeyPlaceholder');
+  const elHintEl = document.querySelector('#elModal p');
+  if (elHintEl) elHintEl.textContent = t('elHint');
+  const elBtns = document.querySelectorAll('#elModal .modal-actions button');
+  if (elBtns[0]) elBtns[0].textContent = t('elCancel');
+  if (elBtns[1]) elBtns[1].textContent = t('elConnect');
+  const modalTitleEl  = document.getElementById('modal-title');
+  if (modalTitleEl) modalTitleEl.textContent = t('editTitle');
+  const lblLabel = document.querySelector('label[for="modal-label"]');
+  if (lblLabel) lblLabel.textContent = t('editLabelField');
+  const lblInp = document.getElementById('modal-label');
+  if (lblInp) lblInp.placeholder = t('editLabelPh');
+  const phrLabel = document.querySelector('label[for="modal-phrase"]');
+  if (phrLabel) phrLabel.textContent = t('editPhraseField');
+  const phrInp = document.getElementById('modal-phrase');
+  if (phrInp) phrInp.placeholder = t('editPhrasePh');
+  const colorLabel = document.querySelector('#editModal .modal-field:nth-child(3) label');
+  if (colorLabel) colorLabel.textContent = t('editColorField');
+  const editBtns = document.querySelectorAll('#editModal .modal-actions button');
+  if (editBtns[0]) editBtns[0].textContent = t('editCancel');
+  if (editBtns[1]) editBtns[1].textContent = t('editSave');
+  document.documentElement.lang = currentLang;
+}
 
 const PRESETS = [
   { cls: '',         label: 'Standard', bg: '#ffffff', color: '#0c4a6e', border: '#bae6fd' },
@@ -611,13 +851,19 @@ let modalTarget = null; // { sectionId, btnIndex } btnIndex=-1 = new
 
 function loadConfig() {
   try {
-    const s = localStorage.getItem(LS_KEY);
+    const langKey = LS_KEY + '_' + currentLang;
+    const s = localStorage.getItem(langKey);
     if (s) return JSON.parse(s);
+    // migration: if German and old key exists, migrate it
+    if (currentLang === 'de') {
+      const old = localStorage.getItem(LS_KEY);
+      if (old) { const p = JSON.parse(old); localStorage.setItem(langKey, old); return p; }
+    }
   } catch(e) {}
-  return deepClone(DEFAULT_CONFIG);
+  return getDefaultConfig(currentLang);
 }
 function saveConfig(cfg) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(cfg)); } catch(e) {}
+  try { localStorage.setItem(LS_KEY + '_' + currentLang, JSON.stringify(cfg)); } catch(e) {}
 }
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 
@@ -669,7 +915,7 @@ function renderSection(sec, isEditing) {
   if (isEditing) {
     const addBtn = document.createElement('button');
     addBtn.className = 'btn-add-new';
-    addBtn.setAttribute('aria-label', 'Button hinzufügen');
+    addBtn.setAttribute('aria-label', t('addBtnAria'));
     addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
     addBtn.onclick = () => openModal(sec.id, -1);
     grid.appendChild(addBtn);
@@ -689,7 +935,7 @@ function renderButton(btn, sectionId, idx, isEditing) {
 
     const badge = document.createElement('button');
     badge.className = 'delete-badge';
-    badge.setAttribute('aria-label', 'Löschen');
+    badge.setAttribute('aria-label', t('deleteBadgeAria'));
     badge.innerHTML = '<i class="fa-solid fa-xmark"></i>';
     badge.onclick = (e) => {
       e.stopPropagation();
@@ -715,8 +961,8 @@ function enterEditMode() {
   document.body.classList.add('editing');
   document.getElementById('edit-controls').classList.add('visible');
   const speakBtn = document.getElementById('btn-speak');
-  speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Einstellungen teilen';
-  speakBtn.setAttribute('aria-label', 'Konfiguration teilen');
+  speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> ' + t('btnShare');
+  speakBtn.setAttribute('aria-label', t('btnShare'));
   speakBtn.classList.add('share-mode');
   speakBtn.onclick = shareConfig;
   renderAll(draft, true);
@@ -733,8 +979,8 @@ function exitEditMode(apply) {
   document.body.classList.remove('editing');
   document.getElementById('edit-controls').classList.remove('visible');
   const speakBtn = document.getElementById('btn-speak');
-  speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Vorlesen';
-  speakBtn.setAttribute('aria-label', 'Aktuellen Satz vorlesen');
+  speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ' + t('btnSpeak');
+  speakBtn.setAttribute('aria-label', t('btnSpeak'));
   speakBtn.classList.remove('share-mode');
   speakBtn.onclick = speakCurrent;
   renderAll(config, false);
@@ -850,7 +1096,7 @@ function say(text) {
 }
 
 function clearPhrase() {
-  phraseEl.textContent = 'Antippen zum Buchstabieren …';
+  phraseEl.textContent = t('phrasePlaceholder');
   phraseEl.classList.add('placeholder');
   phraseEl.classList.remove('has-text');
   window.speechSynthesis && window.speechSynthesis.cancel();
@@ -875,14 +1121,14 @@ function speakCurrent() {
 function toggleMute() {
   muted = !muted;
   const btn = document.getElementById('muteBtn');
-  btn.textContent = 'Ton: ' + (muted ? 'aus' : 'an');
+  btn.textContent = muted ? t('muteOff') : t('muteOn');
   btn.classList.toggle('active', !muted);
   if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
 }
 function toggleAuto() {
   autoSpeak = !autoSpeak;
   const btn = document.getElementById('autoBtn');
-  btn.textContent = 'Auto-Vorlesen: ' + (autoSpeak ? 'an' : 'aus');
+  btn.textContent = autoSpeak ? t('autoOn') : t('autoOff');
   btn.classList.toggle('active', autoSpeak);
 }
 
@@ -909,6 +1155,11 @@ function populateLangs() {
 function onLangChange() {
   currentLang = document.getElementById('langSelect').value;
   localStorage.setItem(LS_LANG_KEY, currentLang);
+  config = loadConfig();
+  updateUIStrings();
+  buildPain();
+  renderAll(config, false);
+  navFocus(0);
   populateVoices();
 }
 
@@ -932,7 +1183,7 @@ function populateVoices() {
   const list = filtered.length ? filtered : voices;
   if (list.length) {
     const grp = document.createElement('optgroup');
-    grp.label = 'Gerätestimmen';
+    grp.label = t('deviceVoicesGroup');
     list.forEach((v, i) => {
       const opt = document.createElement('option');
       opt.value = 'native:' + v.name;
@@ -982,7 +1233,7 @@ function speak(text) {
   if (selectedELVoiceId) {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     speakEL(text, selectedELVoiceId).catch(e => {
-      if (e.name !== 'AbortError') showToast('ElevenLabs Fehler');
+      if (e.name !== 'AbortError') showToast(t('toastElError'));
     });
     return;
   }
@@ -1009,7 +1260,7 @@ async function speakEL(text, voiceId) {
     body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
   });
   if (!res.ok) {
-    showToast(res.status === 401 ? 'ElevenLabs: Ungültiger API-Schlüssel' : 'ElevenLabs Fehler (' + res.status + ')');
+    showToast(res.status === 401 ? t('toastElBadKey') : t('toastElErrCode', { code: res.status }));
     return;
   }
   const blob = await res.blob();
@@ -1052,7 +1303,7 @@ async function saveELKey() {
     elVoices = []; selectedELVoiceId = null;
     document.getElementById('elBtn').classList.remove('active');
     populateVoices();
-    showToast('ElevenLabs getrennt');
+    showToast(t('toastElDisconnected'));
     return;
   }
   elApiKey = val;
@@ -1060,7 +1311,7 @@ async function saveELKey() {
   elVoices = [...EL_DEFAULT_VOICES]; // available immediately
   document.getElementById('elBtn').classList.add('active');
   populateVoices();
-  showToast('ElevenLabs verbunden');
+  showToast(t('toastElConnected'));
   fetchELVoices(); // replace with user's actual voices in background
 }
 
@@ -1086,22 +1337,24 @@ function scrollToLetters() {
 // ════════════════════════════════════════════
 //  PAIN SCALE
 // ════════════════════════════════════════════
-(function buildPain() {
+function buildPain() {
   const grid = document.getElementById('painGrid');
+  grid.innerHTML = '';
   for (let i = 0; i <= 10; i++) {
     const btn = document.createElement('button');
     btn.className = 'pain-btn';
     btn.textContent = i;
-    btn.setAttribute('aria-label', 'Schmerz ' + i + ' von 10');
+    btn.setAttribute('aria-label', t('painBtnAria', { n: i }));
     const r = Math.round(i <= 5 ? (i/5)*210 : 210+((i-5)/5)*45);
     const g = Math.round(i <= 5 ? 160-(i/5)*40 : 120-((i-5)/5)*90);
     const b = i <= 5 ? Math.round(80-(i/5)*60) : 20;
     btn.style.background = `rgb(${r},${g},${b})`;
     btn.style.color = i <= 3 ? '#14532d' : i <= 6 ? '#451a03' : '#fff';
-    btn.onclick = () => say('Mein Schmerz ist ' + i + ' von 10');
+    btn.onclick = () => say(t('painPhrase', { n: i }));
     grid.appendChild(btn);
   }
-})();
+}
+buildPain();
 
 // ════════════════════════════════════════════
 //  ALPHABET
@@ -1259,7 +1512,7 @@ async function shareConfig() {
       await navigator.share({ title: 'Kommunikationshilfe', url });
     } else if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(url);
-      showToast('Link kopiert');
+      showToast(t('toastLinkCopied'));
     } else {
       document.getElementById('share-url-input').value = url;
       document.getElementById('shareModal').showModal();
@@ -1269,10 +1522,10 @@ async function shareConfig() {
       }, 80);
     }
   } catch(e) {
-    if (e.name !== 'AbortError') showToast('Fehler beim Teilen');
+    if (e.name !== 'AbortError') showToast(t('toastShareError'));
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Teilen';
+    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> ' + t('btnShare');
   }
 }
 
@@ -1280,7 +1533,7 @@ async function copyShareUrl() {
   const url = document.getElementById('share-url-input').value;
   try {
     await navigator.clipboard.writeText(url);
-    showToast('Link kopiert');
+    showToast(t('toastLinkCopied'));
     document.getElementById('shareModal').close();
   } catch(e) {}
 }
@@ -1297,7 +1550,7 @@ async function checkImportParam() {
     _pendingImport = decoded;
     document.getElementById('importModal').showModal();
   } catch(e) {
-    showToast('Ungültiger Konfigurations-Link');
+    showToast(t('toastImportBad'));
     stripConfigParam();
   }
 }
@@ -1311,7 +1564,27 @@ function applyImport() {
   stripConfigParam();
   renderAll(config, false);
   navFocus(0);
-  showToast('Konfiguration importiert');
+  showToast(t('toastImportOk'));
+}
+
+async function detectLanguageByIP() {
+  if (localStorage.getItem(LS_LANG_KEY)) return; // user already chose
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    if (!res.ok) return;
+    const data = await res.json();
+    const lang = countryToLang(data.country_code);
+    if (lang && lang !== currentLang && LANGUAGES.find(l => l.code === lang)) {
+      currentLang = lang;
+      document.getElementById('langSelect').value = currentLang;
+      config = loadConfig();
+      updateUIStrings();
+      buildPain();
+      renderAll(config, false);
+      navFocus(0);
+      populateVoices();
+    }
+  } catch(e) { /* silently ignore */ }
 }
 
 // ════════════════════════════════════════════
@@ -1322,11 +1595,13 @@ config = loadConfig();
 renderAll(config, false);
 navFocus(0);
 populateLangs();
+updateUIStrings();
 checkImportParam();
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
   fetchELVoices();
 }
+window.addEventListener('load', detectLanguageByIP);
 </script>
 </body>
 </html>
