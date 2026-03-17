@@ -1267,8 +1267,13 @@ let currentLang = 'de';
 // ── ElevenLabs state ──
 const LS_EL_KEY = 'el_api_key';
 const LS_VOICE_KEY = 'preferred_voice';
+const LS_EL_VOICES_CACHE = 'el_voices_cache';
 let elApiKey = localStorage.getItem(LS_EL_KEY) || '';
-let elVoices = elApiKey ? [...EL_DEFAULT_VOICES] : [];
+let elVoices = (() => {
+  if (!elApiKey) return [];
+  try { const c = localStorage.getItem(LS_EL_VOICES_CACHE); if (c) return JSON.parse(c); } catch(e) {}
+  return [...EL_DEFAULT_VOICES];
+})();
 let selectedELVoiceId = null;
 let elAbortCtrl = null;
 let elAudio = null;
@@ -1341,8 +1346,11 @@ populateVoices();
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
   fetchELVoices().then(() => {
-    if (localStorage.getItem(LS_VOICE_KEY)) return; // respect existing saved preference
     const sel = document.getElementById('voiceSelect');
+    const saved = localStorage.getItem(LS_VOICE_KEY);
+    if (saved && [...sel.options].some(o => o.value === saved)) {
+      sel.value = saved; syncVoiceState(); return;
+    }
     const huskey = findHuskey(sel);
     if (huskey) { sel.value = huskey.value; syncVoiceState(); localStorage.setItem(LS_VOICE_KEY, huskey.value); }
   });
@@ -1413,6 +1421,7 @@ async function fetchELVoices() {
     const data = await res.json();
     if (data.voices?.length) {
       elVoices = data.voices;
+      localStorage.setItem(LS_EL_VOICES_CACHE, JSON.stringify(elVoices));
       populateVoices();
       return true;
     }
