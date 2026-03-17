@@ -265,6 +265,20 @@
     .letter-actions button:hover  { background: #e0f2fe; }
     .letter-actions button:active { background: #bae6fd; transform: scale(.97); }
 
+    /* ═══ SETTINGS BTN ═══ */
+    .settings-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--card); border: 1.5px solid var(--line); border-radius: 12px;
+      padding: 8px 14px; font-size: 14px; font-weight: 600; color: var(--text);
+      cursor: pointer; box-shadow: var(--shadow); transition: background .15s, transform .1s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .settings-btn.active { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .settings-btn:hover  { background: #e0f2fe; }
+    .settings-btn:active { transform: scale(.97); }
+
+    .voice-select-wrap select { flex: 1; max-width: none; }
+
     /* ═══ FOOTER ═══ */
     .footer { text-align: center; font-size: 13px; color: var(--muted); padding: 4px 0 8px; opacity: .65; }
 
@@ -345,13 +359,6 @@
     <div class="toolbar" role="toolbar" aria-label="Einstellungen">
       <button onclick="toggleMute()" id="muteBtn" aria-pressed="true">Ton: an</button>
       <button onclick="toggleAuto()" id="autoBtn" class="active" aria-pressed="true">Auto-Vorlesen: an</button>
-      <div class="voice-select-wrap">
-        <i class="fa-solid fa-microphone"></i>
-        <select id="voiceSelect" onchange="onVoiceChange()" aria-label="Stimme auswählen">
-          <option value="">Stimme…</option>
-        </select>
-      </div>
-      <button onclick="openELModal()" id="elBtn" aria-label="ElevenLabs Einstellungen"><i class="fa-solid fa-key"></i> EL</button>
     </div>
 
     <!-- configurable sections rendered here -->
@@ -372,6 +379,28 @@
           <i class="fa-solid fa-delete-left"></i> Löschen
         </button>
         <button onclick="appendSpace()" aria-label="Leerzeichen einfügen">Leerzeichen</button>
+      </div>
+    </section>
+
+    <!-- STIMME & SPRACHE (fixed at bottom of scroll) -->
+    <section class="section" aria-labelledby="sec-settings">
+      <div class="section-title" id="sec-settings">Stimme &amp; Sprache</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="voice-select-wrap" style="width:100%">
+          <i class="fa-solid fa-globe"></i>
+          <select id="langSelect" onchange="onLangChange()" aria-label="Sprache auswählen"></select>
+        </div>
+        <div style="display:flex;gap:8px;align-items:stretch">
+          <div class="voice-select-wrap" style="flex:1">
+            <i class="fa-solid fa-microphone"></i>
+            <select id="voiceSelect" onchange="onVoiceChange()" aria-label="Stimme auswählen">
+              <option value="">Stimme…</option>
+            </select>
+          </div>
+          <button class="settings-btn" onclick="openELModal()" id="elBtn" aria-label="ElevenLabs Einstellungen">
+            <i class="fa-solid fa-key"></i> EL
+          </button>
+        </div>
       </div>
     </section>
 
@@ -551,6 +580,16 @@ const PRESETS = [
 ];
 
 const LS_KEY = 'kommunikationshilfe_v2';
+
+const LANGUAGES = [
+  { code: 'de', label: '🇩🇪 Deutsch',   ttsLang: 'de-DE' },
+  { code: 'en', label: '🇬🇧 English',   ttsLang: 'en-US' },
+  { code: 'es', label: '🇪🇸 Español',   ttsLang: 'es-ES' },
+  { code: 'zh', label: '🇨🇳 中文',      ttsLang: 'zh-CN' },
+  { code: 'ar', label: '🇸🇦 العربية',   ttsLang: 'ar-SA' },
+  { code: 'hi', label: '🇮🇳 हिन्दी',   ttsLang: 'hi-IN' },
+];
+const LS_LANG_KEY = 'app_lang';
 
 // ════════════════════════════════════════════
 //  STATE
@@ -835,7 +874,35 @@ function toggleAuto() {
   btn.textContent = 'Auto-Vorlesen: ' + (autoSpeak ? 'an' : 'aus');
   btn.classList.toggle('active', autoSpeak);
 }
+
+function detectLanguage() {
+  const saved = localStorage.getItem(LS_LANG_KEY);
+  if (saved && LANGUAGES.find(l => l.code === saved)) return saved;
+  const nav = (navigator.language || 'en').toLowerCase();
+  for (const l of LANGUAGES) { if (nav.startsWith(l.code)) return l.code; }
+  return 'en';
+}
+
+function populateLangs() {
+  const sel = document.getElementById('langSelect');
+  sel.innerHTML = '';
+  LANGUAGES.forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.code;
+    opt.textContent = l.label;
+    sel.appendChild(opt);
+  });
+  sel.value = currentLang;
+}
+
+function onLangChange() {
+  currentLang = document.getElementById('langSelect').value;
+  localStorage.setItem(LS_LANG_KEY, currentLang);
+  populateVoices();
+}
+
 let selectedVoice = null;
+let currentLang = 'de';
 
 // ── ElevenLabs state ──
 const LS_EL_KEY = 'el_api_key';
@@ -850,8 +917,8 @@ function populateVoices() {
   const sel = document.getElementById('voiceSelect');
   const prev = sel.value;
   sel.innerHTML = '';
-  const de = voices.filter(v => v.lang.startsWith('de'));
-  const list = de.length ? de : voices;
+  const filtered = voices.filter(v => v.lang.toLowerCase().startsWith(currentLang));
+  const list = filtered.length ? filtered : voices;
   if (list.length) {
     const grp = document.createElement('optgroup');
     grp.label = 'Gerätestimmen';
@@ -912,7 +979,8 @@ function speak(text) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   if (selectedVoice) u.voice = selectedVoice;
-  u.lang = 'de-DE'; u.rate = 0.88; u.pitch = 1;
+  u.lang = (LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0]).ttsLang;
+  u.rate = 0.88; u.pitch = 1;
   window.speechSynthesis.speak(u);
 }
 
@@ -1241,9 +1309,11 @@ function applyImport() {
 // ════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════
+currentLang = detectLanguage();
 config = loadConfig();
 renderAll(config, false);
 navFocus(0);
+populateLangs();
 checkImportParam();
 if (elApiKey) fetchELVoices();
 </script>
