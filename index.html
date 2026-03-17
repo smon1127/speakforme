@@ -1278,10 +1278,14 @@ function populateVoices() {
     sel.appendChild(grp);
   }
 
+  // Restore previous selection, or auto-select preferred EL voice, or first option
   if (prev && [...sel.options].some(o => o.value === prev)) {
     sel.value = prev;
-  } else if (sel.options.length) {
-    sel.value = sel.options[0].value;
+  } else {
+    const preferred = [...sel.options].find(o =>
+      o.value.startsWith('el:') && /huskey/i.test(o.textContent)
+    );
+    sel.value = preferred ? preferred.value : (sel.options[0]?.value || '');
   }
   onVoiceChange();
 }
