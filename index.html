@@ -94,16 +94,24 @@
       font-size: 11px; font-weight: 700; letter-spacing: .10em;
       text-transform: uppercase; color: #7dd3fc; margin-bottom: 5px;
     }
+    .phrase-wrap { position: relative; margin-bottom: 10px; }
     #phrase {
       width: 100%; min-height: 52px;
       background: rgba(255,255,255,.12); border: 2px solid rgba(125,211,252,.4);
-      border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 800;
+      border-radius: 14px; padding: 10px 46px 10px 14px; font-size: 22px; font-weight: 800;
       color: #fff; line-height: 1.25; word-break: break-word;
-      transition: background .15s; margin-bottom: 10px; cursor: pointer;
+      transition: background .15s; cursor: pointer;
       display: flex; align-items: center;
     }
     #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
     #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
+    #phrase-clear {
+      display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,.18); border: none; border-radius: 8px;
+      color: #fff; width: 34px; height: 34px; cursor: pointer; font-size: 16px;
+      align-items: center; justify-content: center;
+    }
+    #phrase-clear:active { background: rgba(255,255,255,.30); }
 
     /* ═══ SCROLL AREA ═══ */
     .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
@@ -396,8 +404,11 @@
   </button>
   <div class="top-bar-inner">
     <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
-    <div id="phrase" class="placeholder" aria-live="assertive"
-         onclick="scrollToLetters()" role="button" tabindex="0">Antippen zum Buchstabieren …</div>
+    <div class="phrase-wrap">
+      <div id="phrase" class="placeholder" aria-live="assertive"
+           onclick="scrollToLetters()" role="button" tabindex="0">Antippen zum Buchstabieren …</div>
+      <button id="phrase-clear" onclick="clearPhrase()" aria-label="Eingabe löschen"><i class="fa-solid fa-xmark"></i></button>
+    </div>
   </div>
 </header>
 
@@ -1182,12 +1193,14 @@ function attachLongPress(element) {
 //  PHRASE / SPEECH
 // ════════════════════════════════════════════
 const phraseEl = document.getElementById('phrase');
+const phraseClearBtn = document.getElementById('phrase-clear');
 let muted = false, autoSpeak = true;
 
 function say(text) {
   phraseEl.textContent = text;
   phraseEl.classList.remove('placeholder');
   phraseEl.classList.add('has-text');
+  phraseClearBtn.style.display = 'flex';
   phraseEl.classList.remove('flash');
   void phraseEl.offsetWidth;
   phraseEl.classList.add('flash');
@@ -1198,6 +1211,7 @@ function clearPhrase() {
   phraseEl.textContent = t('phrasePlaceholder');
   phraseEl.classList.add('placeholder');
   phraseEl.classList.remove('has-text');
+  phraseClearBtn.style.display = 'none';
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
@@ -1205,6 +1219,7 @@ function appendLetter(ch) {
   const cur = phraseEl.classList.contains('placeholder') ? '' : phraseEl.textContent;
   phraseEl.textContent = cur + ch;
   phraseEl.classList.remove('placeholder'); phraseEl.classList.add('has-text');
+  phraseClearBtn.style.display = 'flex';
 }
 function appendSpace() { appendLetter(' '); }
 function backspace() {
