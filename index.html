@@ -1058,8 +1058,10 @@ function exitEditMode(apply) {
   speakBtn.setAttribute('aria-label', t('btnSpeak'));
   speakBtn.classList.remove('share-mode');
   speakBtn.onclick = speakCurrent;
+  const savedScroll = scrollArea.scrollTop;
   renderAll(config, false);
   navFocus(0);
+  scrollArea.scrollTop = savedScroll;
 }
 
 // ════════════════════════════════════════════
