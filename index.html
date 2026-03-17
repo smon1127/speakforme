@@ -1354,6 +1354,20 @@ if ('speechSynthesis' in window) {
 }
 populateVoices();
 
+function selectHuskey() {
+  const sel = document.getElementById('voiceSelect');
+  const huskey = findHuskey(sel);
+  if (huskey) { sel.value = huskey.value; onVoiceChange(); }
+}
+
+function switchToNative(errorMsg) {
+  const sel = document.getElementById('voiceSelect');
+  const native = [...sel.options].find(o => o.value.startsWith('native:'));
+  if (native) { sel.value = native.value; onVoiceChange(); }
+  else { selectedELVoiceId = null; localStorage.removeItem(LS_VOICE_KEY); }
+  showToast(errorMsg);
+}
+
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
   fetchELVoices().then(() => {
@@ -1362,8 +1376,7 @@ if (elApiKey) {
     if (saved && [...sel.options].some(o => o.value === saved)) {
       sel.value = saved; syncVoiceState(); return;
     }
-    const huskey = findHuskey(sel);
-    if (huskey) { sel.value = huskey.value; syncVoiceState(); localStorage.setItem(LS_VOICE_KEY, huskey.value); }
+    selectHuskey();
   });
 }
 
@@ -1373,7 +1386,7 @@ function speak(text) {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     speakEL(text, selectedELVoiceId).catch(e => {
       if (e.name === 'AbortError') return;
-      showToast(e.message || t('toastElError'));
+      switchToNative(e.message || t('toastElError'));
       speakNative(text);
     });
     return;
@@ -1513,6 +1526,7 @@ async function saveELKey() {
   const ok = await fetchELVoices();
   const preview = val.length > 8 ? val.slice(0, 4) + '…' + val.slice(-4) : val;
   if (ok) {
+    selectHuskey();
     showToast(t('toastElConnected') + ' · ' + preview + ' · ' + elVoices.length + ' Stimmen');
   } else {
     elVoices = [...EL_DEFAULT_VOICES]; // fallback only if fetch fails
