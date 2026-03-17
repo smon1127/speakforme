@@ -1432,8 +1432,9 @@ async function speakEL(text, voiceId) {
     try { const j = await res.json(); code = j?.detail?.code || ''; msg = j?.detail?.message || ''; } catch(e) {}
     const keyPreview = elApiKey ? elApiKey.slice(0,4) + '…' + elApiKey.slice(-4) : '(empty)';
     console.error('EL TTS', res.status, code, msg, '| key:', keyPreview, '| voice:', voiceId);
-    const label = code || res.status;
-    throw new Error(label);
+    const combined = (code + ' ' + msg).toLowerCase();
+    const label = /quota|credit|limit|exceed/.test(combined) ? 'quota' : (code || res.status);
+    throw new Error(String(label));
   }
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
