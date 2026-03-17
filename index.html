@@ -1221,7 +1221,6 @@ function toggleMute() {
   muted = !muted;
   const btn = document.getElementById('muteBtn');
   btn.textContent = muted ? t('muteOff') : t('muteOn');
-  btn.classList.toggle('active', !muted);
   if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
 }
 function toggleAuto() {
