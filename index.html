@@ -1365,7 +1365,10 @@ function switchToNative(errorCode) {
   const native = [...sel.options].find(o => o.value.startsWith('native:'));
   if (native) { sel.value = native.value; onVoiceChange(); }
   else { selectedELVoiceId = null; localStorage.removeItem(LS_VOICE_KEY); }
-  showToast('EL ' + errorCode + ' → Gerätestimme');
+  const reason = /quota|credit|limit/i.test(errorCode) ? 'Guthaben erschöpft'
+    : /401|unauthorized|invalid/i.test(errorCode) ? 'Ungültiger API-Schlüssel'
+    : 'Nicht verfügbar';
+  showToast('ElevenLabs: ' + reason + ' – wechselt zu Gerätestimme');
 }
 
 if (elApiKey) {
