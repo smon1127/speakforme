@@ -1330,7 +1330,11 @@ populateVoices();
 
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
-  fetchELVoices();
+  fetchELVoices().then(() => {
+    const sel = document.getElementById('voiceSelect');
+    const huskey = [...sel.options].find(o => o.value.startsWith('el:') && /huskey/i.test(o.textContent));
+    if (huskey) { sel.value = huskey.value; onVoiceChange(); }
+  });
 }
 
 function speak(text) {
