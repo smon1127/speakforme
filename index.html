@@ -1030,6 +1030,26 @@ function renderButton(btn, sectionId, idx, isEditing) {
 // ════════════════════════════════════════════
 //  EDIT MODE
 // ════════════════════════════════════════════
+function scrollAnchorSave() {
+  const areaTop = scrollArea.getBoundingClientRect().top;
+  for (const sec of document.querySelectorAll('#sections-container section')) {
+    const dist = sec.getBoundingClientRect().top - areaTop + scrollArea.scrollTop;
+    if (dist + sec.offsetHeight > scrollArea.scrollTop) {
+      return { id: sec.getAttribute('aria-labelledby'), relPos: dist - scrollArea.scrollTop };
+    }
+  }
+  return null;
+}
+
+function scrollAnchorRestore(anchor) {
+  if (!anchor) return;
+  const el = document.getElementById(anchor.id);
+  if (!el) return;
+  const sec = el.closest('section');
+  const dist = sec.getBoundingClientRect().top - scrollArea.getBoundingClientRect().top + scrollArea.scrollTop;
+  scrollArea.scrollTop = dist - anchor.relPos;
+}
+
 function enterEditMode() {
   if (editMode) return;
   editMode = true;
@@ -1041,7 +1061,9 @@ function enterEditMode() {
   speakBtn.setAttribute('aria-label', t('btnShare'));
   speakBtn.classList.add('share-mode');
   speakBtn.onclick = shareConfig;
+  const anchor = scrollAnchorSave();
   renderAll(draft, true);
+  scrollAnchorRestore(anchor);
 }
 
 function exitEditMode(apply) {
@@ -1058,10 +1080,10 @@ function exitEditMode(apply) {
   speakBtn.setAttribute('aria-label', t('btnSpeak'));
   speakBtn.classList.remove('share-mode');
   speakBtn.onclick = speakCurrent;
-  const savedScroll = scrollArea.scrollTop;
+  const anchor = scrollAnchorSave();
   renderAll(config, false);
   navFocus(0);
-  scrollArea.scrollTop = savedScroll;
+  scrollAnchorRestore(anchor);
 }
 
 // ════════════════════════════════════════════
