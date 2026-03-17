@@ -1520,7 +1520,8 @@ function scrollPage(dir) {
 function scrollToLetters() {
   if (editMode) return;
   const sec = document.getElementById('sec-buch').closest('section');
-  scrollArea.scrollTo({ top: sec.offsetTop - 8, behavior: 'smooth' });
+  const top = sec.getBoundingClientRect().top - scrollArea.getBoundingClientRect().top + scrollArea.scrollTop - 8;
+  scrollArea.scrollTo({ top, behavior: 'smooth' });
 }
 
 // ════════════════════════════════════════════
