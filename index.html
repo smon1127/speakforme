@@ -1328,6 +1328,11 @@ if ('speechSynthesis' in window) {
 }
 populateVoices();
 
+if (elApiKey) {
+  document.getElementById('elBtn').classList.add('active');
+  fetchELVoices();
+}
+
 function speak(text) {
   if (muted) return;
   if (selectedELVoiceId) {
