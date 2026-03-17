@@ -478,10 +478,10 @@
 
 <!-- ═══ TOAST ═══ -->
 <div id="toast" style="
-  position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:#0c4a6e;color:#fff;padding:10px 20px;border-radius:20px;
-  font-size:14px;font-weight:600;pointer-events:none;opacity:0;
-  transition:opacity .2s,transform .2s;z-index:200;white-space:nowrap
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.92);
+  background:#0c4a6e;color:#fff;padding:12px 24px;border-radius:20px;
+  font-size:15px;font-weight:600;pointer-events:none;opacity:0;
+  transition:opacity .18s,transform .18s;z-index:200;white-space:nowrap;max-width:90vw;text-align:center
 "></div>
 
 <!-- ═══ EDIT MODAL ═══ -->
@@ -832,14 +832,14 @@ const LANGUAGES = [
 const LS_LANG_KEY = 'app_lang';
 
 const EL_DEFAULT_VOICES = [
-  { voice_id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel'  },
-  { voice_id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam'    },
-  { voice_id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella'   },
-  { voice_id: 'ErXwobaYiN019PkySvjV', name: 'Antoni'  },
-  { voice_id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie' },
-  { voice_id: '9BWtsMINqrJLrRacOk9x', name: 'Aria'    },
-  { voice_id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel'  },
-  { voice_id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte'},
+  // Women
+  { voice_id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel'    },
+  { voice_id: 'EXAVITQu4vr4xnSDxMaL', name: 'Bella'     },
+  { voice_id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte' },
+  // Men
+  { voice_id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam'      },
+  { voice_id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel'    },
+  { voice_id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie'   },
 ];
 
 // ════════════════════════════════════════════
@@ -1163,7 +1163,6 @@ function onLangChange() {
   populateVoices();
 }
 
-let selectedVoice = null;
 let currentLang = 'de';
 
 // ── ElevenLabs state ──
@@ -1175,23 +1174,9 @@ let elAbortCtrl = null;
 let elAudio = null;
 
 function populateVoices() {
-  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
   const sel = document.getElementById('voiceSelect');
   const prev = sel.value;
   sel.innerHTML = '';
-  const filtered = voices.filter(v => v.lang.toLowerCase().startsWith(currentLang));
-  const list = filtered.length ? filtered : voices;
-  if (list.length) {
-    const grp = document.createElement('optgroup');
-    grp.label = t('deviceVoicesGroup');
-    list.forEach((v, i) => {
-      const opt = document.createElement('option');
-      opt.value = 'native:' + v.name;
-      opt.textContent = 'Voice ' + String.fromCharCode(65 + i);
-      grp.appendChild(opt);
-    });
-    sel.appendChild(grp);
-  }
   if (elVoices.length) {
     const grp = document.createElement('optgroup');
     grp.label = 'ElevenLabs';
@@ -1213,37 +1198,18 @@ function populateVoices() {
 
 function onVoiceChange() {
   const val = document.getElementById('voiceSelect').value;
-  if (val.startsWith('el:')) {
-    selectedELVoiceId = val.slice(3);
-    selectedVoice = null;
-  } else {
-    selectedELVoiceId = null;
-    const name = val.startsWith('native:') ? val.slice(7) : val;
-    selectedVoice = (window.speechSynthesis ? window.speechSynthesis.getVoices() : []).find(v => v.name === name) || null;
-  }
+  selectedELVoiceId = val.startsWith('el:') ? val.slice(3) : null;
 }
 
-if ('speechSynthesis' in window) {
-  window.speechSynthesis.onvoiceschanged = populateVoices;
-  populateVoices();
-}
+populateVoices();
 
 function speak(text) {
   if (muted) return;
-  if (selectedELVoiceId) {
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    speakEL(text, selectedELVoiceId).catch(e => {
-      if (e.name !== 'AbortError') showToast(t('toastElError'));
-    });
-    return;
-  }
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  if (selectedVoice) u.voice = selectedVoice;
-  u.lang = (LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0]).ttsLang;
-  u.rate = 0.88; u.pitch = 1;
-  window.speechSynthesis.speak(u);
+  if (!selectedELVoiceId) return;
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  speakEL(text, selectedELVoiceId).catch(e => {
+    if (e.name !== 'AbortError') showToast(t('toastElError'));
+  });
 }
 
 // ════════════════════════════════════════════
@@ -1500,10 +1466,10 @@ async function buildShareUrl() {
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  t.style.opacity = '1'; t.style.transform = 'translate(-50%,-50%) scale(1)';
   clearTimeout(t._timer);
   t._timer = setTimeout(() => {
-    t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
+    t.style.opacity = '0'; t.style.transform = 'translate(-50%,-50%) scale(.92)';
   }, 2200);
 }
 
