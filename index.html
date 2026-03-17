@@ -1227,7 +1227,6 @@ function toggleAuto() {
   autoSpeak = !autoSpeak;
   const btn = document.getElementById('autoBtn');
   btn.textContent = autoSpeak ? t('autoOn') : t('autoOff');
-  btn.classList.toggle('active', autoSpeak);
 }
 
 function detectLanguage() {
