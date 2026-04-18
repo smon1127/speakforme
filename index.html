@@ -90,25 +90,30 @@
       background: #e0f2fe; border: 1.5px solid var(--line); color: #0284c7;
     }
 
+    .phrase-heading { margin-bottom: 5px; }
     .phrase-label {
       font-size: 11px; font-weight: 700; letter-spacing: .10em;
-      text-transform: uppercase; color: #7dd3fc; margin-bottom: 5px;
+      text-transform: uppercase; color: #7dd3fc; margin: 0;
+    }
+    .phrase-row {
+      display: flex; align-items: stretch; gap: 8px;
+      margin-bottom: 10px;
     }
     #phrase {
-      width: 100%; min-height: 52px; margin-bottom: 10px;
+      flex: 1; min-width: 0; min-height: 40px;
       background: rgba(255,255,255,.12); border: 2px solid rgba(125,211,252,.4);
-      border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 800;
-      color: #fff; line-height: 1.25; word-break: break-word;
+      border-radius: 12px; padding: 6px 8px; font-size: 16px; font-weight: 800;
+      color: #fff; line-height: 1.2; word-break: break-word;
       transition: background .15s; cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 6px;
     }
     #phrase.has-text  { background: rgba(255,255,255,.18); border-color: rgba(125,211,252,.7); }
-    #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 17px; }
+    #phrase.placeholder { color: rgba(255,255,255,.40); font-weight: 500; font-size: 13px; }
     #phrase-text { flex: 1; }
     #phrase-clear {
       display: none; flex-shrink: 0; margin-left: auto;
       background: rgba(255,255,255,.18); border: none; border-radius: 8px;
-      color: #fff; width: 34px; height: 34px; cursor: pointer; font-size: 16px;
+      color: #fff; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
       padding: 0; line-height: 1;
     }
     #phrase.has-text #phrase-clear { display: flex; align-items: center; justify-content: center; }
@@ -123,7 +128,11 @@
       flex-shrink: 0; background: #fff; border-top: 1px solid var(--line);
       box-shadow: 0 -4px 20px rgba(12,74,110,.08); z-index: 10;
     }
-    .bottom-bar-inner { max-width: 640px; margin: 0 auto; padding: 10px 12px 10px; }
+    .bottom-bar-inner {
+      display: none;
+      max-width: 640px; margin: 0 auto; padding: 10px 12px 10px;
+    }
+    body.editing .bottom-bar-inner { display: block; }
 
     /* edit mode controls row */
     #edit-controls {
@@ -146,8 +155,12 @@
     .btn-apply:active { transform: scale(.97); filter: brightness(.85); }
 
     .btn-speak {
-      display: block; width: 100%; min-height: 50px; border-radius: 14px; border: none;
-      background: #0284c7; color: #fff; font-size: 17px; font-weight: 700;
+      box-sizing: border-box;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 120px; width: 120px; min-width: 120px; max-width: 120px;
+      min-height: 40px; padding: 0 6px;
+      border-radius: 12px; border: none;
+      background: #0284c7; color: #fff; font-size: 14px; font-weight: 700;
       cursor: pointer; transition: filter .15s, transform .1s, background .2s, color .2s;
     }
     .btn-speak:hover  { filter: brightness(.92); }
@@ -166,6 +179,18 @@
     .toolbar button:hover  { background: #e0f2fe; }
     .toolbar button:active { transform: scale(.97); }
     .toolbar button.active { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+
+    .toolbar-select {
+      background: var(--card); border: 1.5px solid var(--line); border-radius: 12px;
+      padding: 10px 12px; font-size: 15px; font-weight: 600; color: var(--text);
+      cursor: pointer; box-shadow: var(--shadow); transition: background .15s, transform .1s;
+      outline: none; -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230c4a6e'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      padding-right: 30px; touch-action: auto;
+    }
+    .toolbar-select:hover { background-color: #e0f2fe; }
+    .toolbar-select:active { transform: scale(.97); }
 
     .voice-select-wrap {
       display: flex; align-items: center; gap: 6px;
@@ -190,13 +215,13 @@
       font-size: 12px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--muted); margin: 0 0 10px;
     }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .two-col { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px; }
     .two-col .section { margin-bottom: 0; }
 
     /* ═══ BUTTONS ═══ */
     .grid { display: grid; gap: 9px; }
-    .col-2 { grid-template-columns: 1fr 1fr; }
-    .col-3 { grid-template-columns: repeat(3, 1fr); }
+    .col-2 { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .col-3 { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
 
     .btn {
       border: 1.5px solid var(--line); border-radius: 14px; background: var(--card);
@@ -216,6 +241,29 @@
     .btn-no   { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
     .btn-urg  { background: #fff7ed; color: #9a3412; border-color: #fdba74; }
     .btn-blue { background: #e0f2fe; color: #0c4a6e; border-color: #7dd3fc; }
+
+    /* ═══ ZOOM LEVELS ═══ */
+    body.zoom-1 .btn { min-height: 100px; font-size: 26px; padding: 22px 14px; }
+    body.zoom-1 .btn-huge { min-height: 120px; font-size: 38px; }
+    body.zoom-1 .btn-big  { min-height: 104px; font-size: 28px; }
+    body.zoom-1 .col-2 { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    body.zoom-1 .col-3 { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    body.zoom-1 .pain-grid { grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); }
+    body.zoom-1 .pain-btn { min-height: 82px; font-size: 26px; }
+    body.zoom-1 .letter-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+    body.zoom-1 .btn-letter { min-height: 76px; font-size: 28px; }
+    body.zoom-1 .letter-actions button { min-height: 90px; font-size: 26px; }
+
+    body.zoom-2 .btn { min-height: 140px; font-size: 36px; padding: 30px 18px; }
+    body.zoom-2 .btn-huge { min-height: 170px; font-size: 52px; }
+    body.zoom-2 .btn-big  { min-height: 150px; font-size: 40px; }
+    body.zoom-2 .col-2 { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    body.zoom-2 .col-3 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    body.zoom-2 .pain-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    body.zoom-2 .pain-btn { min-height: 120px; font-size: 36px; }
+    body.zoom-2 .letter-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    body.zoom-2 .btn-letter { min-height: 110px; font-size: 38px; }
+    body.zoom-2 .letter-actions button { min-height: 130px; font-size: 36px; }
 
     /* ═══ EDIT MODE ═══ */
     .delete-badge {
@@ -248,9 +296,9 @@
     body.editing .letter-actions button { opacity: .3; pointer-events: none; }
 
     /* ═══ PAIN SCALE ═══ */
-    .pain-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
+    .pain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 6px; }
     .pain-btn {
-      border: none; border-radius: 10px; min-height: 54px;
+      border: none; border-radius: 10px; min-height: 54px; aspect-ratio: 1;
       font-size: 18px; font-weight: 800; cursor: pointer; transition: filter .12s, transform .1s;
     }
     .pain-btn:hover  { filter: brightness(.88); transform: translateY(-1px); }
@@ -260,7 +308,7 @@
     .letter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 7px; }
     .btn-letter {
       border: 1.5px solid var(--line); border-radius: 10px; background: var(--card);
-      color: var(--text); min-height: 52px; font-size: 20px; font-weight: 700;
+      color: var(--text); min-height: 52px; aspect-ratio: 1; font-size: 20px; font-weight: 700;
       cursor: pointer; transition: background .12s, transform .1s;
     }
     .btn-letter:hover  { background: #e0f2fe; transform: translateY(-1px); }
@@ -384,13 +432,77 @@
 
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 480px) {
-      .two-col { grid-template-columns: 1fr; }
-      .pain-grid { grid-template-columns: repeat(6, 1fr); }
       .btn-huge { font-size: 22px; min-height: 72px; }
       .btn-big  { font-size: 18px; }
-      .col-3    { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 340px) { .pain-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    /* ═══ TABLET (iPad portrait & landscape) ═══ */
+    @media (min-width: 768px) {
+      .top-bar-inner,
+      .scroll-inner,
+      .bottom-bar-inner { max-width: 960px; }
+
+      .scroll-btn { min-height: 80px; }
+      .scroll-visual { font-size: 19px; max-width: 936px; }
+
+      #phrase { font-size: 20px; min-height: 48px; padding: 8px 10px; }
+      #phrase.placeholder { font-size: 15px; }
+
+      .section { padding: 18px; margin-bottom: 18px; border-radius: 20px; }
+      .section-title { font-size: 13px; margin-bottom: 12px; }
+      .two-col { gap: 16px; margin-bottom: 18px; }
+
+      .grid { gap: 12px; }
+
+      .btn { padding: 16px 14px; min-height: 68px; font-size: 20px; border-radius: 16px; }
+      .btn-huge { min-height: 90px; font-size: 30px; }
+      .btn-big  { min-height: 76px; font-size: 22px; }
+      .btn small { font-size: 12px; }
+
+      .pain-grid { gap: 8px; }
+      .pain-btn { min-height: 62px; font-size: 20px; border-radius: 12px; }
+
+      .letter-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 9px; }
+      .btn-letter { min-height: 60px; font-size: 22px; border-radius: 12px; }
+      .letter-actions { gap: 10px; margin-top: 12px; }
+      .letter-actions button { min-height: 68px; font-size: 20px; }
+
+      .toolbar button { padding: 12px 20px; font-size: 16px; }
+      .toolbar-select { padding: 12px 32px 12px 14px; font-size: 16px; }
+      .settings-btn { padding: 10px 18px; font-size: 15px; }
+
+      .btn-speak {
+        flex-basis: 132px; width: 132px; min-width: 132px; max-width: 132px;
+        min-height: 48px; font-size: 15px; border-radius: 14px;
+      }
+      .btn-cancel, .btn-apply { min-height: 52px; font-size: 17px; }
+      .bottom-bar-inner { padding: 12px 16px; }
+
+      #editModal,
+      #elModal { width: min(520px, calc(100vw - 48px)); }
+      .modal-inner { padding: 28px 26px 24px; }
+      .modal-title { font-size: 20px; }
+      .modal-field input { font-size: 18px; padding: 14px 16px; }
+      .modal-actions button { min-height: 54px; font-size: 17px; }
+
+      .voice-select-wrap select { font-size: 16px; }
+
+      .footer { font-size: 14px; padding: 8px 0 12px; }
+    }
+
+    @media (min-width: 1024px) {
+      .top-bar-inner,
+      .scroll-inner,
+      .bottom-bar-inner { max-width: 1120px; }
+
+      .scroll-visual { max-width: 1096px; }
+
+      .section { padding: 22px; }
+
+      .letter-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 10px; }
+      .btn-letter { min-height: 64px; font-size: 24px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; transform: none !important; }
     }
@@ -404,11 +516,18 @@
     <span class="scroll-visual"><i class="fa-solid fa-chevron-up"></i> <span id="scroll-up-text">Nach oben</span></span>
   </button>
   <div class="top-bar-inner">
-    <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
-    <div id="phrase" class="placeholder" aria-live="assertive"
-         onclick="scrollToLetters()" role="button" tabindex="0">
-      <span id="phrase-text">Antippen zum Buchstabieren …</span>
-      <button id="phrase-clear" onclick="event.stopPropagation();clearPhrase()" aria-label="Eingabe löschen"><i class="fa-solid fa-xmark"></i></button>
+    <div class="phrase-heading">
+      <div class="phrase-label" aria-hidden="true">Aktuelle Auswahl</div>
+    </div>
+    <div class="phrase-row">
+      <div id="phrase" class="placeholder" aria-live="assertive"
+           onclick="scrollToLetters()" role="button" tabindex="0">
+        <span id="phrase-text">Antippen zum Buchstabieren …</span>
+        <button id="phrase-clear" onclick="event.stopPropagation();clearPhrase()" aria-label="Eingabe löschen"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <button id="btn-speak" class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
+        <i class="fa-solid fa-volume-high"></i>Vorlesen
+      </button>
     </div>
   </div>
 </header>
@@ -419,7 +538,8 @@
 
     <div class="toolbar" role="toolbar" aria-label="Einstellungen">
       <button onclick="toggleMute()" id="muteBtn" class="active" aria-pressed="true">Ton: an</button>
-      <button onclick="toggleAuto()" id="autoBtn" class="active" aria-pressed="true">Auto-Vorlesen: an</button>
+      <button onclick="toggleZoom()" id="zoomBtn" aria-label="Zoom"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <select id="langSelect" class="toolbar-select" onchange="onLangChange()" aria-label="Sprache auswählen"></select>
     </div>
 
     <!-- configurable sections rendered here -->
@@ -443,25 +563,19 @@
       </div>
     </section>
 
-    <!-- STIMME & SPRACHE (fixed at bottom of scroll) -->
+    <!-- STIMME (fixed at bottom of scroll) -->
     <section class="section" aria-labelledby="sec-settings">
       <div class="section-title" id="sec-settings">Stimme &amp; Sprache</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="voice-select-wrap" style="width:100%">
-          <i class="fa-solid fa-globe"></i>
-          <select id="langSelect" onchange="onLangChange()" aria-label="Sprache auswählen"></select>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <div class="voice-select-wrap" style="flex:1">
+          <i class="fa-solid fa-microphone"></i>
+          <select id="voiceSelect" onchange="onVoiceChange()" aria-label="Stimme auswählen">
+            <option value="">Stimme…</option>
+          </select>
         </div>
-        <div style="display:flex;gap:8px;align-items:stretch">
-          <div class="voice-select-wrap" style="flex:1">
-            <i class="fa-solid fa-microphone"></i>
-            <select id="voiceSelect" onchange="onVoiceChange()" aria-label="Stimme auswählen">
-              <option value="">Stimme…</option>
-            </select>
-          </div>
-          <button class="settings-btn" onclick="openELModal()" id="elBtn" aria-label="ElevenLabs Einstellungen">
-            <i class="fa-solid fa-key"></i> EL
-          </button>
-        </div>
+        <button class="settings-btn" onclick="openELModal()" id="elBtn" aria-label="ElevenLabs Einstellungen">
+          <i class="fa-solid fa-key"></i> EL
+        </button>
       </div>
     </section>
 
@@ -485,9 +599,6 @@
         <i class="fa-solid fa-check"></i> Übernehmen
       </button>
     </div>
-    <button id="btn-speak" class="btn-speak" onclick="speakCurrent()" aria-label="Aktuellen Satz vorlesen">
-      <i class="fa-solid fa-volume-high"></i> Vorlesen
-    </button>
   </div>
   <button class="scroll-btn scroll-btn-down" onclick="scrollPage(1)" aria-label="Eine Seite nach unten">
     <span class="scroll-visual"><span id="scroll-down-text">Nach unten</span> <i class="fa-solid fa-chevron-down"></i></span>
@@ -684,8 +795,8 @@ const TRANSLATIONS = {
   de: {
     scrollUp:'Nach oben', scrollDown:'Nach unten',
     phraseLabel:'Aktuelle Auswahl', phrasePlaceholder:'Antippen zum Buchstabieren …',
-    muteOn:'Ton: an', muteOff:'Ton: aus', autoOn:'Auto-Vorlesen: an', autoOff:'Auto-Vorlesen: aus',
-    btnSpeak:'Vorlesen', btnShare:'Einstellungen teilen', btnCancel:'Abbrechen', btnApply:'Übernehmen',
+    muteOn:'Ton: an', muteOff:'Ton: aus',
+    btnSpeak:'Vorlesen', btnShare:'Teilen', btnCancel:'Abbrechen', btnApply:'Übernehmen',
     secPain:'Schmerzskala — 0 (kein) bis 10 (maximal)', secLetters:'Buchstaben — einzelne Wörter tippen', secVoice:'Stimme & Sprache',
     letterDelete:'Löschen', letterSpace:'Leerzeichen', letterDeleteAria:'Letzten Buchstaben löschen', letterSpaceAria:'Leerzeichen einfügen',
     footerLine1:'Offline-Webseite für das iPhone', footerLine2:'Safari: Teilen → Zum Home-Bildschirm',
@@ -704,8 +815,8 @@ const TRANSLATIONS = {
   en: {
     scrollUp:'Scroll up', scrollDown:'Scroll down',
     phraseLabel:'Current Selection', phrasePlaceholder:'Tap to spell …',
-    muteOn:'Sound: on', muteOff:'Sound: off', autoOn:'Auto-speak: on', autoOff:'Auto-speak: off',
-    btnSpeak:'Speak', btnShare:'Share settings', btnCancel:'Cancel', btnApply:'Apply',
+    muteOn:'Sound: on', muteOff:'Sound: off',
+    btnSpeak:'Speak', btnShare:'Share', btnCancel:'Cancel', btnApply:'Apply',
     secPain:'Pain scale — 0 (none) to 10 (maximum)', secLetters:'Letters — type individual words', secVoice:'Voice & Language',
     letterDelete:'Delete', letterSpace:'Space', letterDeleteAria:'Delete last letter', letterSpaceAria:'Insert space',
     footerLine1:'Offline page for iPhone', footerLine2:'Safari: Share → Add to Home Screen',
@@ -724,8 +835,8 @@ const TRANSLATIONS = {
   es: {
     scrollUp:'Arriba', scrollDown:'Abajo',
     phraseLabel:'Selección actual', phrasePlaceholder:'Toca para deletrear …',
-    muteOn:'Sonido: activo', muteOff:'Sonido: apagado', autoOn:'Auto-hablar: activo', autoOff:'Auto-hablar: apagado',
-    btnSpeak:'Hablar', btnShare:'Compartir ajustes', btnCancel:'Cancelar', btnApply:'Aplicar',
+    muteOn:'Sonido: activo', muteOff:'Sonido: apagado',
+    btnSpeak:'Hablar', btnShare:'Compartir', btnCancel:'Cancelar', btnApply:'Aplicar',
     secPain:'Escala de dolor — 0 (ninguno) a 10 (máximo)', secLetters:'Letras — escribir palabras individuales', secVoice:'Voz e idioma',
     letterDelete:'Borrar', letterSpace:'Espacio', letterDeleteAria:'Borrar última letra', letterSpaceAria:'Insertar espacio',
     footerLine1:'Página sin conexión para iPhone', footerLine2:'Safari: Compartir → Añadir a inicio',
@@ -744,8 +855,8 @@ const TRANSLATIONS = {
   zh: {
     scrollUp:'向上', scrollDown:'向下',
     phraseLabel:'当前选择', phrasePlaceholder:'点击拼写 …',
-    muteOn:'声音：开', muteOff:'声音：关', autoOn:'自动朗读：开', autoOff:'自动朗读：关',
-    btnSpeak:'朗读', btnShare:'分享设置', btnCancel:'取消', btnApply:'应用',
+    muteOn:'声音：开', muteOff:'声音：关',
+    btnSpeak:'朗读', btnShare:'分享', btnCancel:'取消', btnApply:'应用',
     secPain:'疼痛量表 — 0（无）到10（最大）', secLetters:'字母 — 逐字拼写', secVoice:'语音与语言',
     letterDelete:'删除', letterSpace:'空格', letterDeleteAria:'删除最后一个字母', letterSpaceAria:'插入空格',
     footerLine1:'iPhone离线页面', footerLine2:'Safari：分享 → 添加到主屏幕',
@@ -764,8 +875,8 @@ const TRANSLATIONS = {
   ar: {
     scrollUp:'للأعلى', scrollDown:'للأسفل',
     phraseLabel:'الاختيار الحالي', phrasePlaceholder:'انقر للتهجئة …',
-    muteOn:'الصوت: تشغيل', muteOff:'الصوت: إيقاف', autoOn:'نطق تلقائي: تشغيل', autoOff:'نطق تلقائي: إيقاف',
-    btnSpeak:'تحدث', btnShare:'مشاركة الإعدادات', btnCancel:'إلغاء', btnApply:'تطبيق',
+    muteOn:'الصوت: تشغيل', muteOff:'الصوت: إيقاف',
+    btnSpeak:'تحدث', btnShare:'مشاركة', btnCancel:'إلغاء', btnApply:'تطبيق',
     secPain:'مقياس الألم — 0 (لا يوجد) إلى 10 (أقصى)', secLetters:'الحروف — تهجئة كلمات', secVoice:'الصوت واللغة',
     letterDelete:'حذف', letterSpace:'مسافة', letterDeleteAria:'حذف الحرف الأخير', letterSpaceAria:'إدراج مسافة',
     footerLine1:'صفحة غير متصلة للآيفون', footerLine2:'سفاري: مشاركة → إضافة للشاشة الرئيسية',
@@ -784,8 +895,8 @@ const TRANSLATIONS = {
   hi: {
     scrollUp:'ऊपर', scrollDown:'नीचे',
     phraseLabel:'वर्तमान चयन', phrasePlaceholder:'टाइप करने के लिए टैप करें …',
-    muteOn:'ध्वनि: चालू', muteOff:'ध्वनि: बंद', autoOn:'स्वतः बोलें: चालू', autoOff:'स्वतः बोलें: बंद',
-    btnSpeak:'बोलें', btnShare:'सेटिंग्स साझा करें', btnCancel:'रद्द करें', btnApply:'लागू करें',
+    muteOn:'ध्वनि: चालू', muteOff:'ध्वनि: बंद',
+    btnSpeak:'बोलें', btnShare:'साझा करें', btnCancel:'रद्द करें', btnApply:'लागू करें',
     secPain:'दर्द का पैमाना — 0 (कोई नहीं) से 10 (अधिकतम)', secLetters:'अक्षर — शब्द टाइप करें', secVoice:'आवाज़ और भाषा',
     letterDelete:'हटाएं', letterSpace:'स्पेस', letterDeleteAria:'अंतिम अक्षर हटाएं', letterSpaceAria:'स्पेस डालें',
     footerLine1:'iPhone के लिए ऑफलाइन पेज', footerLine2:'Safari: शेयर → होम स्क्रीन में जोड़ें',
@@ -810,15 +921,6 @@ function t(key, vars) {
   return v;
 }
 
-const COUNTRY_TO_LANG = {
-  DE:'de',AT:'de',CH:'de',LI:'de',LU:'de',
-  GB:'en',US:'en',AU:'en',CA:'en',NZ:'en',IE:'en',ZA:'en',IN:'hi',
-  ES:'es',MX:'es',AR:'es',CO:'es',CL:'es',PE:'es',VE:'es',EC:'es',GT:'es',CU:'es',BO:'es',DO:'es',HN:'es',PY:'es',SV:'es',NI:'es',CR:'es',PA:'es',UY:'es',
-  CN:'zh',TW:'zh',HK:'zh',MO:'zh',SG:'zh',
-  SA:'ar',AE:'ar',EG:'ar',IQ:'ar',SY:'ar',JO:'ar',LB:'ar',KW:'ar',OM:'ar',YE:'ar',LY:'ar',TN:'ar',DZ:'ar',MA:'ar',QA:'ar',BH:'ar',SD:'ar',
-};
-function countryToLang(cc) { return COUNTRY_TO_LANG[(cc||'').toUpperCase()] || null; }
-
 function updateUIStrings() {
   const upText   = document.getElementById('scroll-up-text');
   const downText = document.getElementById('scroll-down-text');
@@ -829,11 +931,9 @@ function updateUIStrings() {
   if (phraseEl && phraseEl.classList.contains('placeholder')) phraseTextEl.textContent = t('phrasePlaceholder');
   const muteBtn = document.getElementById('muteBtn');
   if (muteBtn) muteBtn.textContent = muted ? t('muteOff') : t('muteOn');
-  const autoBtn = document.getElementById('autoBtn');
-  if (autoBtn) autoBtn.textContent = autoSpeak ? t('autoOn') : t('autoOff');
   const speakBtn = document.getElementById('btn-speak');
   if (speakBtn && !editMode) {
-    speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ' + t('btnSpeak');
+    speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>' + t('btnSpeak');
     speakBtn.setAttribute('aria-label', t('btnSpeak'));
   }
   const cancelCtrl = document.querySelector('#edit-controls .btn-cancel');
@@ -1069,7 +1169,7 @@ function enterEditMode() {
   document.body.classList.add('editing');
   document.getElementById('edit-controls').classList.add('visible');
   const speakBtn = document.getElementById('btn-speak');
-  speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> ' + t('btnShare');
+  speakBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i>' + t('btnShare');
   speakBtn.setAttribute('aria-label', t('btnShare'));
   speakBtn.classList.add('share-mode');
   speakBtn.onclick = shareConfig;
@@ -1088,7 +1188,7 @@ function exitEditMode(apply) {
   document.body.classList.remove('editing');
   document.getElementById('edit-controls').classList.remove('visible');
   const speakBtn = document.getElementById('btn-speak');
-  speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ' + t('btnSpeak');
+  speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>' + t('btnSpeak');
   speakBtn.setAttribute('aria-label', t('btnSpeak'));
   speakBtn.classList.remove('share-mode');
   speakBtn.onclick = speakCurrent;
@@ -1195,7 +1295,8 @@ function attachLongPress(element) {
 // ════════════════════════════════════════════
 const phraseEl = document.getElementById('phrase');
 const phraseTextEl = document.getElementById('phrase-text');
-let muted = false, autoSpeak = true;
+const LS_MUTED_KEY = 'app_muted';
+let muted = localStorage.getItem(LS_MUTED_KEY) === '1';
 
 function say(text) {
   phraseTextEl.textContent = text;
@@ -1204,7 +1305,7 @@ function say(text) {
   phraseEl.classList.remove('flash');
   void phraseEl.offsetWidth;
   phraseEl.classList.add('flash');
-  if (autoSpeak && !muted) speak(text);
+  if (!muted) speak(text);
 }
 
 function clearPhrase() {
@@ -1232,22 +1333,51 @@ function speakCurrent() {
 }
 function toggleMute() {
   muted = !muted;
-  const btn = document.getElementById('muteBtn');
-  btn.textContent = muted ? t('muteOff') : t('muteOn');
+  localStorage.setItem(LS_MUTED_KEY, muted ? '1' : '0');
+  applyMuteUI();
   if (muted) window.speechSynthesis && window.speechSynthesis.cancel();
 }
-function toggleAuto() {
-  autoSpeak = !autoSpeak;
-  const btn = document.getElementById('autoBtn');
-  btn.textContent = autoSpeak ? t('autoOn') : t('autoOff');
+function applyMuteUI() {
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.textContent = muted ? t('muteOff') : t('muteOn');
+  muteBtn.classList.toggle('active', !muted);
+  muteBtn.setAttribute('aria-pressed', String(!muted));
+}
+
+const LS_ZOOM_KEY = 'app_zoom';
+const ZOOM_LEVELS = 3;
+let zoomLevel = 0;
+
+function applyZoom() {
+  document.body.classList.remove('zoom-1', 'zoom-2');
+  if (zoomLevel > 0) document.body.classList.add('zoom-' + zoomLevel);
+  const btn = document.getElementById('zoomBtn');
+  const icons = [
+    '<i class="fa-solid fa-magnifying-glass-plus"></i>',
+    '<i class="fa-solid fa-magnifying-glass-plus"></i> +',
+    '<i class="fa-solid fa-magnifying-glass-minus"></i> ++',
+  ];
+  btn.innerHTML = icons[zoomLevel];
+  btn.classList.toggle('active', zoomLevel > 0);
+}
+
+function toggleZoom() {
+  zoomLevel = (zoomLevel + 1) % ZOOM_LEVELS;
+  localStorage.setItem(LS_ZOOM_KEY, zoomLevel);
+  applyZoom();
+}
+
+function initZoom() {
+  const saved = localStorage.getItem(LS_ZOOM_KEY);
+  if (saved !== null) zoomLevel = parseInt(saved, 10) || 0;
+  if (zoomLevel >= ZOOM_LEVELS) zoomLevel = 0;
+  applyZoom();
 }
 
 function detectLanguage() {
   const saved = localStorage.getItem(LS_LANG_KEY);
   if (saved && LANGUAGES.find(l => l.code === saved)) return saved;
-  const nav = (navigator.language || 'en').toLowerCase();
-  for (const l of LANGUAGES) { if (nav.startsWith(l.code)) return l.code; }
-  return 'en';
+  return 'de';
 }
 
 function populateLangs() {
@@ -1750,7 +1880,7 @@ async function shareConfig() {
     if (e.name !== 'AbortError') showToast(t('toastShareError'));
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> ' + t('btnShare');
+    btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i>' + t('btnShare');
   }
 }
 
@@ -1792,26 +1922,6 @@ function applyImport() {
   showToast(t('toastImportOk'));
 }
 
-async function detectLanguageByIP() {
-  if (localStorage.getItem(LS_LANG_KEY)) return; // user already chose
-  try {
-    const res = await fetch('https://ipapi.co/json/');
-    if (!res.ok) return;
-    const data = await res.json();
-    const lang = countryToLang(data.country_code);
-    if (lang && lang !== currentLang && LANGUAGES.find(l => l.code === lang)) {
-      currentLang = lang;
-      document.getElementById('langSelect').value = currentLang;
-      config = loadConfig();
-      updateUIStrings();
-      buildPain();
-      renderAll(config, false);
-      navFocus(0);
-      populateVoices();
-    }
-  } catch(e) { /* silently ignore */ }
-}
-
 // ════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════
@@ -1821,12 +1931,13 @@ renderAll(config, false);
 navFocus(0);
 populateLangs();
 updateUIStrings();
+applyMuteUI();
+initZoom();
 checkImportParam();
 if (elApiKey) {
   document.getElementById('elBtn').classList.add('active');
   fetchELVoices();
 }
-window.addEventListener('load', detectLanguageByIP);
 </script>
 </body>
 </html>
